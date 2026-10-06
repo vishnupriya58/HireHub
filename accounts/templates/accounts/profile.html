@@ -1,0 +1,799 @@
+{% extends "base.html" %}
+
+{% block title %}My Profile — HireHub{% endblock %}
+
+{% block extra_head %}
+<link
+    href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700;12..96,800&display=swap"
+    rel="stylesheet">
+
+<style>
+    html {
+        scroll-behavior: smooth;
+    }
+
+    body {
+        background: #f8fafc;
+    }
+
+    /* ================================
+       PAGE HEADER
+    ================================= */
+    .page-header h1 {
+        font-family: 'Bricolage Grotesque', sans-serif !important;
+        font-size: 38px;
+        font-weight: 700;
+        letter-spacing: -1.4px;
+        line-height: 1.05;
+        margin-bottom: 6px;
+        color: #0f172a;
+    }
+
+    .page-header p {
+        font-family: 'Bricolage Grotesque', sans-serif !important;
+        font-size: 14px;
+        font-weight: 500;
+        color: #64748b;
+        margin: 0;
+    }
+
+    /* ================================
+       PROFILE CARD
+    ================================= */
+    .profile-card {
+        background: #fff;
+        border: 1px solid #e5e7eb;
+        border-radius: 20px;
+        overflow: hidden;
+        margin-bottom: 28px;
+        box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04),
+            0 8px 24px rgba(15, 23, 42, 0.04);
+        position: relative;
+    }
+
+    .profile-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, #6366f1, #8b5cf6, #a855f7);
+    }
+
+    /* ================================
+       PROFILE HEADER
+    ================================= */
+    .profile-header {
+        padding: 34px 36px 0;
+        display: flex;
+        align-items: flex-start;
+        gap: 24px;
+        flex-wrap: wrap;
+    }
+
+    /* ================================
+       PROFILE IMAGE
+    ================================= */
+    .profile-avatar-wrap {
+        position: relative;
+        flex-shrink: 0;
+    }
+
+    .profile-avatar {
+        width: 96px;
+        height: 96px;
+        border-radius: 20px;
+        background: linear-gradient(135deg, #6366f1, #a855f7);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: 'Bricolage Grotesque', sans-serif;
+        font-size: 40px;
+        font-weight: 700;
+        box-shadow: 0 8px 24px rgba(99, 102, 241, 0.28);
+        overflow: hidden;
+    }
+
+    .profile-avatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+    }
+
+    .avatar-status {
+        position: absolute;
+        bottom: -2px;
+        right: -2px;
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        background: #10b981;
+        border: 3.5px solid white;
+        box-shadow: 0 2px 8px rgba(16, 185, 129, 0.35);
+    }
+
+    /* ================================
+       PROFILE INFO
+    ================================= */
+    .profile-info {
+        flex: 1;
+        min-width: 260px;
+        padding-top: 4px;
+    }
+
+    .profile-name-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-bottom: 6px;
+    }
+
+    .profile-name-row h2 {
+        font-family: 'Bricolage Grotesque', sans-serif;
+        font-size: 27px;
+        font-weight: 700;
+        color: #0f172a;
+        letter-spacing: -1px;
+        line-height: 1.15;
+        margin: 0;
+    }
+
+    .verified-badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 22px;
+        height: 22px;
+        background: linear-gradient(135deg, #6366f1, #a855f7);
+        color: white;
+        border-radius: 50%;
+        font-size: 11px;
+    }
+
+    .role-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        background: linear-gradient(135deg, #eef2ff, #faf5ff);
+        color: #6366f1;
+        font-size: 10.5px;
+        font-weight: 700;
+        letter-spacing: 0.8px;
+        text-transform: uppercase;
+        padding: 5px 11px;
+        border-radius: 20px;
+        border: 1px solid #e0e7ff;
+    }
+
+    .profile-headline {
+        font-size: 14.5px;
+        font-weight: 500;
+        color: #64748b;
+        margin: 0 0 16px;
+        line-height: 1.5;
+    }
+
+    .profile-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .meta-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        font-size: 12.5px;
+        font-weight: 600;
+        color: #475569;
+        padding: 7px 13px;
+        background: #f8fafc;
+        border: 1px solid #e5e7eb;
+        border-radius: 10px;
+    }
+
+    .meta-chip i {
+        color: #6366f1;
+    }
+
+    /* ================================
+       ACTION
+    ================================= */
+    .profile-actions {
+        flex-shrink: 0;
+        padding-top: 4px;
+    }
+
+    .profile-actions .btn-gradient {
+        padding: 11px 22px;
+        font-size: 13px;
+        font-weight: 700;
+        border-radius: 11px;
+    }
+
+    /* ================================
+       STATS
+    ================================= */
+    .profile-stats {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        margin-top: 28px;
+        border-top: 1px solid #f1f5f9;
+        background: #fafbfc;
+    }
+
+    .stat-item {
+        padding: 22px 20px;
+        text-align: center;
+        position: relative;
+    }
+
+    .stat-item:not(:last-child)::after {
+        content: "";
+        position: absolute;
+        right: 0;
+        top: 30%;
+        bottom: 30%;
+        width: 1px;
+        background: #e5e7eb;
+    }
+
+    .stat-value {
+        font-family: 'Bricolage Grotesque', sans-serif;
+        font-size: 28px;
+        font-weight: 700;
+        color: #0f172a;
+        margin-bottom: 6px;
+    }
+
+    .stat-value.accent {
+        background: linear-gradient(135deg, #6366f1, #a855f7);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .stat-label {
+        font-size: 10.5px;
+        font-weight: 700;
+        color: #94a3b8;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+    }
+
+    /* ================================
+       FORM SECTION
+    ================================= */
+    .form-section {
+        background: #fff;
+        border: 1px solid #e5e7eb;
+        border-radius: 18px;
+        padding: 30px 32px;
+        margin-bottom: 22px;
+        box-shadow: 0 1px 3px rgba(15, 23, 42, 0.03);
+    }
+
+    .form-section-header {
+        display: flex;
+        align-items: center;
+        gap: 13px;
+        margin-bottom: 24px;
+        padding-bottom: 18px;
+        border-bottom: 1px solid #f1f5f9;
+    }
+
+    .form-section-header .icon-box {
+        width: 42px;
+        height: 42px;
+        border-radius: 11px;
+        background: linear-gradient(135deg, #eef2ff, #faf5ff);
+        color: #6366f1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+    }
+
+    .form-section-header h3 {
+        font-family: 'Bricolage Grotesque', sans-serif;
+        font-size: 18px;
+        font-weight: 700;
+        color: #0f172a;
+        margin: 0;
+    }
+
+    .form-section-header p {
+        font-size: 12.5px;
+        color: #94a3b8;
+        margin: 2px 0 0;
+    }
+
+    /* ================================
+       FORM GRID
+    ================================= */
+    .form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+    }
+
+    .form-grid .full {
+        grid-column: 1 / -1;
+    }
+
+    .field-group {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .field-group label {
+        font-size: 11px;
+        font-weight: 700;
+        color: #475569;
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+    }
+
+    .field-group label i {
+        color: #6366f1;
+    }
+
+    .field-group input,
+    .field-group select,
+    .field-group textarea {
+        width: 100%;
+        padding: 12px 15px;
+        border: 1.5px solid #e5e7eb;
+        border-radius: 11px;
+        font-size: 14px;
+        background: #f9fafb;
+        color: #0f172a;
+        box-sizing: border-box;
+        outline: none;
+    }
+
+    .field-group input:focus,
+    .field-group select:focus,
+    .field-group textarea:focus {
+        border-color: #6366f1;
+        background: white;
+        box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+    }
+
+    .helptext {
+        font-size: 11.5px;
+        color: #9ca3af;
+        margin-top: 6px;
+        line-height: 1.5;
+    }
+
+    /* ================================
+       PROFILE PICTURE UPLOAD
+    ================================= */
+    .profile-upload-box {
+        display: flex;
+        align-items: center;
+        gap: 18px;
+        padding: 18px;
+        background: #f8fafc;
+        border: 1.5px solid #e5e7eb;
+        border-radius: 14px;
+    }
+
+    .profile-upload-preview {
+        width: 64px;
+        height: 64px;
+        border-radius: 14px;
+        overflow: hidden;
+        flex-shrink: 0;
+        background: linear-gradient(135deg, #6366f1, #a855f7);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-family: 'Bricolage Grotesque', sans-serif;
+        font-size: 25px;
+        font-weight: 700;
+    }
+
+    .profile-upload-preview img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .profile-upload-content {
+        flex: 1;
+    }
+
+    .profile-upload-title {
+        font-size: 13px;
+        font-weight: 700;
+        color: #0f172a;
+        margin-bottom: 4px;
+    }
+
+    .profile-upload-subtitle {
+        font-size: 11.5px;
+        color: #94a3b8;
+        margin-bottom: 10px;
+    }
+
+    .profile-file-input {
+        font-size: 12px !important;
+        padding: 0 !important;
+        border: none !important;
+        background: transparent !important;
+        box-shadow: none !important;
+    }
+
+    /* ================================
+       ACTION BUTTONS
+    ================================= */
+    .form-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        padding: 20px 0 0;
+        border-top: 1px solid #f1f5f9;
+        margin-top: 6px;
+    }
+
+    .btn-ghost {
+        background: white;
+        color: #475569;
+        border: 1.5px solid #e5e7eb;
+        padding: 11px 22px;
+        border-radius: 10px;
+        font-size: 13px;
+        font-weight: 700;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+    }
+
+    /* ================================
+       MOBILE
+    ================================= */
+    @media (max-width: 800px) {
+        .page-header h1 {
+            font-size: 30px;
+        }
+
+        .profile-header {
+            padding: 26px 22px 0;
+        }
+
+        .profile-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 16px;
+        }
+
+        .profile-name-row h2 {
+            font-size: 22px;
+        }
+
+        .profile-stats {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .form-section {
+            padding: 24px 20px;
+        }
+
+        .form-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .profile-actions {
+            width: 100%;
+        }
+
+        .profile-actions .btn-gradient {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .profile-upload-box {
+            align-items: flex-start;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .profile-header {
+            flex-direction: column;
+        }
+
+        .profile-upload-box {
+            flex-direction: column;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- PAGE HEADER -->
+<div class="page-header d-flex justify-content-between align-items-center">
+    <div>
+        <h1>My Profile</h1>
+        <p>Manage your personal information and account details</p>
+    </div>
+</div>
+
+<!-- PROFILE CARD -->
+<div class="profile-card">
+
+    <div class="profile-header">
+
+        <!-- PROFILE PHOTO -->
+        <div class="profile-avatar-wrap">
+            <div class="profile-avatar">
+                {% if user.profile.profile_picture %}
+                <img src="{{ user.profile.profile_picture.url }}" alt="Profile Picture">
+                {% else %}
+                {{ user.username|slice:":1"|upper }}
+                {% endif %}
+            </div>
+            <div class="avatar-status" title="Active"></div>
+        </div>
+
+        <!-- USER INFORMATION -->
+        <div class="profile-info">
+            <div class="profile-name-row">
+                <h2>{{ user.profile.full_name|default:user.username }}</h2>
+
+                <span class="verified-badge" title="Verified account">
+                    <i class="bi bi-check-lg"></i>
+                </span>
+
+                <span class="role-pill">
+                    {% if user.role == "APPLICANT" %}
+                    <i class="bi bi-person-fill"></i> Applicant
+                    {% else %}
+                    <i class="bi bi-briefcase-fill"></i> Recruiter
+                    {% endif %}
+                </span>
+            </div>
+
+            <p class="profile-headline">
+                {{ user.profile.headline|default:"Add a headline to describe yourself" }}
+            </p>
+
+            <div class="profile-meta">
+                <span class="meta-chip">
+                    <i class="bi bi-envelope-fill"></i> {{ user.email }}
+                </span>
+
+                <span class="meta-chip">
+                    <i class="bi bi-geo-alt-fill"></i>
+                    {{ user.profile.location|default:"Location not set" }}
+                </span>
+
+                <span class="meta-chip">
+                    <i class="bi bi-briefcase-fill"></i>
+                    {{ user.profile.experience_years }} years experience
+                </span>
+            </div>
+        </div>
+
+        <!-- EDIT BUTTON -->
+        <div class="profile-actions">
+            <a href="#edit-profile-form" class="btn-gradient">
+                <i class="bi bi-pencil-square"></i> Edit Profile
+            </a>
+        </div>
+
+    </div>
+
+    <!-- STATS -->
+    <div class="profile-stats">
+
+        <div class="stat-item">
+            <div class="stat-value accent">
+                {{ resume_count|default:0 }}
+            </div>
+            <div class="stat-label">Resumes</div>
+        </div>
+
+        <div class="stat-item">
+            <div class="stat-value">0</div>
+            <div class="stat-label">Applications</div>
+        </div>
+
+        <div class="stat-item">
+            <div class="stat-value">0</div>
+            <div class="stat-label">Saved Jobs</div>
+        </div>
+
+        <div class="stat-item">
+            <div class="stat-value">—</div>
+            <div class="stat-label">Avg Match</div>
+        </div>
+
+    </div>
+</div>
+
+<!-- EDIT PROFILE FORM -->
+<form id="edit-profile-form" method="post" enctype="multipart/form-data" novalidate>
+
+    {% csrf_token %}
+
+    <!-- PERSONAL INFORMATION -->
+    <div class="form-section">
+
+        <div class="form-section-header">
+
+            <div class="icon-box">
+                <i class="bi bi-person-fill"></i>
+            </div>
+
+            <div>
+                <h3>Personal Information</h3>
+                <p>Basic details about you</p>
+            </div>
+
+        </div>
+
+        <div class="form-grid">
+
+            <!-- FULL NAME -->
+            <div class="field-group">
+
+                <label>
+                    <i class="bi bi-person"></i> Full Name
+                </label>
+
+                {{ form.full_name }}
+
+                {% if form.full_name.errors %}
+                {{ form.full_name.errors }}
+                {% endif %}
+
+            </div>
+
+            <!-- LOCATION -->
+            <div class="field-group">
+
+                <label>
+                    <i class="bi bi-geo-alt"></i> Location
+                </label>
+
+                {{ form.location }}
+
+                {% if form.location.errors %}
+                {{ form.location.errors }}
+                {% endif %}
+
+            </div>
+
+            <!-- HEADLINE -->
+            <div class="field-group full">
+
+                <label>
+                    <i class="bi bi-card-heading"></i> Headline
+                </label>
+
+                {{ form.headline }}
+
+                <span class="helptext">
+                    A short one-line summary, e.g. "Python Django Developer"
+                </span>
+
+                {% if form.headline.errors %}
+                {{ form.headline.errors }}
+                {% endif %}
+
+            </div>
+
+            <!-- PROFILE PICTURE -->
+            <div class="field-group full">
+
+                <label>
+                    <i class="bi bi-camera-fill"></i> Profile Picture
+                </label>
+
+                <div class="profile-upload-box">
+
+                    <div class="profile-upload-preview">
+
+                        {% if user.profile.profile_picture %}
+                        <img src="{{ user.profile.profile_picture.url }}" alt="Profile Picture">
+                        {% else %}
+                        {{ user.username|slice:":1"|upper }}
+                        {% endif %}
+
+                    </div>
+
+                    <div class="profile-upload-content">
+
+                        <div class="profile-upload-title">
+                            Change your profile photo
+                        </div>
+
+                        <div class="profile-upload-subtitle">
+                            JPG, JPEG or PNG • Recommended size 400×400
+                        </div>
+
+                        <input type="file" name="profile_picture" accept=".jpg,.jpeg,.png,image/jpeg,image/png"
+                            class="profile-file-input">
+
+                    </div>
+                </div>
+
+                {% if form.profile_picture.errors %}
+                <div class="text-danger small mt-2">
+                    {{ form.profile_picture.errors }}
+                </div>
+                {% endif %}
+
+            </div>
+
+        </div>
+    </div>
+
+    <!-- PROFESSIONAL DETAILS -->
+    <div class="form-section">
+
+        <div class="form-section-header">
+
+            <div class="icon-box">
+                <i class="bi bi-briefcase-fill"></i>
+            </div>
+
+            <div>
+                <h3>Professional Details</h3>
+                <p>Your experience and career info</p>
+            </div>
+
+        </div>
+
+        <div class="form-grid">
+
+            <div class="field-group">
+
+                <label>
+                    <i class="bi bi-hourglass-split"></i>
+                    Years of Experience
+                </label>
+
+                {{ form.experience_years }}
+
+                {% if form.experience_years.errors %}
+                {{ form.experience_years.errors }}
+                {% endif %}
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- BUTTONS -->
+    <div class="form-actions">
+
+        <a href="{% url 'accounts:dashboard' %}" class="btn-ghost">
+            <i class="bi bi-x-circle"></i>
+            Cancel
+        </a>
+
+        <button type="submit" class="btn-gradient">
+            <i class="bi bi-check-circle-fill"></i>
+            Save Changes
+        </button>
+
+    </div>
+
+</form>
+
+{% endblock %}

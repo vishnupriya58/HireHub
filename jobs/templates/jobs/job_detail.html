@@ -1,0 +1,516 @@
+{% extends "base.html" %}
+
+{% block title %}{{ job.title }} — HireHub{% endblock %}
+
+{% block extra_head %}
+<link
+    href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700;12..96,800&display=swap"
+    rel="stylesheet">
+<style>
+    /* ================================
+       PAGE HEADER
+    ================================= */
+    .job-detail-page {
+        max-width: 960px;
+        margin: 0 auto;
+        padding-bottom: 40px;
+    }
+
+    .page-header {
+        margin-bottom: 24px;
+    }
+
+    .page-header h1 {
+        font-family: 'Bricolage Grotesque', sans-serif !important;
+        font-size: 38px;
+        font-weight: 700;
+        letter-spacing: -1.4px;
+        line-height: 1.05;
+        margin-bottom: 6px;
+        color: #0f172a;
+        font-variation-settings: "opsz" 48;
+    }
+
+    .page-header p {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 14px;
+        font-weight: 500;
+        color: #64748b;
+        margin: 0;
+    }
+
+    /* ================================
+       MAIN CARD
+    ================================= */
+    .job-card {
+        background: #fff;
+        border: 1px solid #e5e7eb;
+        border-radius: 22px;
+        padding: 40px 44px;
+        box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04), 0 8px 24px rgba(15, 23, 42, 0.04);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .job-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, #6366f1, #8b5cf6, #a855f7);
+    }
+
+    /* ================================
+       COMPANY ROW
+    ================================= */
+    .company-row {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        margin-bottom: 26px;
+    }
+
+    .company-logo {
+        width: 60px;
+        height: 60px;
+        border-radius: 16px;
+        background: linear-gradient(135deg, #6366f1, #a855f7);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: 'Bricolage Grotesque', sans-serif;
+        font-size: 26px;
+        font-weight: 700;
+        letter-spacing: -1px;
+        box-shadow: 0 8px 20px rgba(99, 102, 241, 0.28);
+        flex-shrink: 0;
+        overflow: hidden;
+    }
+
+    .company-logo img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .company-info {
+        min-width: 0;
+    }
+
+    .company-name {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 15px;
+        font-weight: 700;
+        color: #6366f1;
+        margin: 0 0 4px;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .company-name::before {
+        content: "\f1c0";
+        font-family: "bootstrap-icons";
+        font-size: 13px;
+    }
+
+    .company-location {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 12.5px;
+        color: #94a3b8;
+        font-weight: 500;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .company-location i {
+        color: #cbd5e1;
+        font-size: 12px;
+    }
+
+    /* ================================
+       JOB TITLE
+    ================================= */
+    .job-title {
+        font-family: 'Bricolage Grotesque', sans-serif;
+        font-size: 36px;
+        font-weight: 700;
+        color: #0f172a;
+        letter-spacing: -1.3px;
+        line-height: 1.1;
+        margin: 0 0 22px;
+        font-variation-settings: "opsz" 48;
+    }
+
+    /* ================================
+       BADGES ROW
+    ================================= */
+    .badges-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-bottom: 30px;
+    }
+
+    .info-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 12.5px;
+        font-weight: 600;
+        color: #334155;
+        padding: 8px 14px;
+        background: #f8fafc;
+        border: 1px solid #e5e7eb;
+        border-radius: 20px;
+        transition: all 0.2s ease;
+    }
+
+    .info-badge:hover {
+        border-color: #c7d2fe;
+        background: #eef2ff;
+        color: #4f46e5;
+    }
+
+    .info-badge i {
+        color: #6366f1;
+        font-size: 13px;
+    }
+
+    /* ================================
+       DIVIDER
+    ================================= */
+    .divider {
+        height: 1px;
+        background: #f1f5f9;
+        margin: 30px 0;
+    }
+
+    /* ================================
+       SECTIONS
+    ================================= */
+    .detail-section {
+        margin-bottom: 32px;
+    }
+
+    .section-title {
+        font-family: 'Bricolage Grotesque', sans-serif;
+        font-size: 19px;
+        font-weight: 700;
+        color: #0f172a;
+        margin: 0 0 14px;
+        letter-spacing: -0.4px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .section-title .title-icon {
+        width: 32px;
+        height: 32px;
+        border-radius: 9px;
+        background: linear-gradient(135deg, #eef2ff, #faf5ff);
+        color: #6366f1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 15px;
+        border: 1px solid #e0e7ff;
+    }
+
+    .section-text {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 14.5px;
+        color: #475569;
+        line-height: 1.8;
+        margin: 0;
+        font-weight: 500;
+    }
+
+    /* ================================
+       SKILLS
+    ================================= */
+    .skills-wrap {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .skill-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 12.5px;
+        font-weight: 700;
+        color: #4f46e5;
+        padding: 8px 14px;
+        background: linear-gradient(135deg, #eef2ff, #faf5ff);
+        border: 1px solid #e0e7ff;
+        border-radius: 20px;
+        transition: all 0.2s ease;
+        letter-spacing: -0.1px;
+    }
+
+    .skill-chip::before {
+        content: "\f270";
+        font-family: "bootstrap-icons";
+        font-size: 11px;
+        color: #6366f1;
+    }
+
+    .skill-chip:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(99, 102, 241, 0.18);
+        border-color: #c7d2fe;
+    }
+
+    /* ================================
+       ACTIONS
+    ================================= */
+    .actions-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        padding-top: 26px;
+        margin-top: 8px;
+        border-top: 1px solid #f1f5f9;
+    }
+
+    .btn-apply {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        background: linear-gradient(135deg, #6366f1, #8b5cf6);
+        color: #fff;
+        border: none;
+        padding: 13px 26px;
+        border-radius: 12px;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 14px;
+        font-weight: 700;
+        text-decoration: none;
+        cursor: pointer;
+        transition: all 0.25s ease;
+        box-shadow: 0 8px 22px rgba(99, 102, 241, 0.28);
+        letter-spacing: -0.1px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .btn-apply::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        transition: left 0.6s ease;
+    }
+
+    .btn-apply:hover::before {
+        left: 100%;
+    }
+
+    .btn-apply:hover {
+        color: #fff;
+        transform: translateY(-2px);
+        box-shadow: 0 14px 32px rgba(99, 102, 241, 0.42);
+    }
+
+    .btn-apply i {
+        font-size: 15px;
+    }
+
+    .btn-outline-soft {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: #fff;
+        color: #475569;
+        border: 1.5px solid #e5e7eb;
+        padding: 12px 22px;
+        border-radius: 12px;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 13.5px;
+        font-weight: 700;
+        text-decoration: none;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        letter-spacing: -0.1px;
+    }
+
+    .btn-outline-soft:hover {
+        border-color: #c7d2fe;
+        background: #f9fafb;
+        color: #4f46e5;
+        transform: translateY(-2px);
+    }
+
+    .btn-outline-soft i {
+        color: #6366f1;
+        font-size: 14px;
+    }
+
+    /* ================================
+       RESPONSIVE
+    ================================= */
+    @media (max-width: 700px) {
+        .page-header h1 {
+            font-size: 30px;
+            letter-spacing: -1px;
+        }
+
+        .job-card {
+            padding: 28px 22px;
+            border-radius: 18px;
+        }
+
+        .job-title {
+            font-size: 26px;
+            letter-spacing: -0.9px;
+        }
+
+        .company-logo {
+            width: 50px;
+            height: 50px;
+            font-size: 22px;
+        }
+
+        .section-title {
+            font-size: 17px;
+        }
+
+        .actions-row {
+            flex-direction: column;
+        }
+
+        .actions-row .btn-apply,
+        .actions-row .btn-outline-soft {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div class="job-detail-page">
+
+    <!-- PAGE HEADER -->
+    <div class="page-header">
+        <h1>Job Details</h1>
+        <p>Review the job description and apply if it fits your skills</p>
+    </div>
+
+    <!-- MAIN CARD -->
+    <div class="job-card">
+
+        <!-- Company -->
+        <div class="company-row">
+            <div class="company-logo">
+                {{ job.company.name|slice:":1"|upper }}
+            </div>
+            <div class="company-info">
+                <h6 class="company-name">{{ job.company.name }}</h6>
+                {% if job.location %}
+                <small class="company-location">
+                    <i class="bi bi-geo-alt"></i>
+                    {{ job.location }}
+                </small>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Job Title -->
+        <h1 class="job-title">{{ job.title }}</h1>
+
+        <!-- Job Information -->
+        <div class="badges-row">
+            {% if job.location %}
+            <span class="info-badge">
+                <i class="bi bi-geo-alt"></i>
+                {{ job.location }}
+            </span>
+            {% endif %}
+
+            {% if job.salary %}
+            <span class="info-badge">
+                <i class="bi bi-cash-stack"></i>
+                {{ job.salary }}
+            </span>
+            {% endif %}
+
+            <span class="info-badge">
+                <i class="bi bi-briefcase"></i>
+                {{ job.experience_required }} years experience
+            </span>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- Job Description -->
+        <div class="detail-section">
+            <h4 class="section-title">
+                <span class="title-icon"><i class="bi bi-file-text"></i></span>
+                Job Description
+            </h4>
+            <p class="section-text">
+                {{ job.description }}
+            </p>
+        </div>
+
+        <!-- Skills -->
+        <div class="detail-section">
+            <h4 class="section-title">
+                <span class="title-icon"><i class="bi bi-tools"></i></span>
+                Required Skills
+            </h4>
+            <div class="skills-wrap">
+                {% for skill in job.skills.split %}
+                <span class="skill-chip">{{ skill }}</span>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="actions-row">
+
+            <!-- Apply -->
+            <form action="{% url 'applications:apply_job' job.id %}" method="post" style="display: inline;">
+                {% csrf_token %}
+                <button type="submit" class="btn-apply">
+                    <i class="bi bi-send-fill"></i>
+                    Apply Now
+                </button>
+            </form>
+
+            <!-- Company Website -->
+            {% if job.company.website %}
+            <a href="{{ job.company.website }}" target="_blank" rel="noopener noreferrer" class="btn-outline-soft">
+                <i class="bi bi-globe2"></i>
+                Visit Company Website
+            </a>
+            {% endif %}
+
+            <!-- Back -->
+            <a href="{% url 'jobs:job_list' %}" class="btn-outline-soft">
+                <i class="bi bi-arrow-left"></i>
+                Back to Jobs
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

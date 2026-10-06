@@ -1,0 +1,613 @@
+{% extends "base.html" %}
+
+{% block title %}Available Jobs — HireHub{% endblock %}
+
+{% block extra_head %}
+
+<link
+    href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700;12..96,800&display=swap"
+    rel="stylesheet">
+
+<style>
+    body {
+        background: #f8fafc;
+    }
+
+    .page-header {
+        margin-bottom: 0;
+    }
+
+    .page-header h1 {
+        font-family: 'Bricolage Grotesque', sans-serif !important;
+        font-size: 38px;
+        font-weight: 700;
+        letter-spacing: -1.4px;
+        line-height: 1.05;
+        margin-bottom: 6px;
+        color: #0f172a;
+    }
+
+    .page-header p {
+        font-family: 'Bricolage Grotesque', sans-serif !important;
+        font-size: 14px;
+        font-weight: 500;
+        color: #64748b;
+        margin: 0;
+        line-height: 1.5;
+    }
+
+    /* ================= BACK BUTTON ================= */
+
+    .back-dashboard {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        margin-top: 18px;
+        padding: 10px 16px;
+        background: #ffffff;
+        color: #475569;
+        border: 1px solid #e2e8f0;
+        border-radius: 10px;
+        font-size: 13px;
+        font-weight: 700;
+        text-decoration: none;
+        transition: all 0.2s ease;
+        box-shadow: 0 2px 6px rgba(15, 23, 42, 0.04);
+    }
+
+    .back-dashboard:hover {
+        color: #6366f1;
+        border-color: #c7d2fe;
+        background: #f8faff;
+        transform: translateY(-1px);
+    }
+
+
+    /* ================= SEARCH BAR ================= */
+
+    .search-wrapper {
+        width: 100%;
+        margin-top: 24px;
+        margin-bottom: 26px;
+    }
+
+    .search-box {
+        width: 100%;
+        min-height: 58px;
+        background: #ffffff;
+        border: 2px solid #e2e8f0;
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        padding: 8px 14px;
+        box-sizing: border-box;
+        box-shadow: 0 3px 10px rgba(15, 23, 42, 0.06);
+    }
+
+    .search-box:focus-within {
+        border-color: #6366f1;
+        box-shadow: 0 4px 15px rgba(99, 102, 241, 0.12);
+    }
+
+    .search-icon {
+        width: 40px;
+        height: 40px;
+        min-width: 40px;
+        border-radius: 10px;
+        background: #eef2ff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 12px;
+    }
+
+    .search-icon i {
+        color: #6366f1;
+        font-size: 18px;
+    }
+
+    .search-input {
+        flex: 1;
+        width: 100%;
+        height: 42px;
+        border: 0 !important;
+        outline: 0 !important;
+        background: #ffffff !important;
+        box-shadow: none !important;
+        color: #0f172a !important;
+        font-family: Arial, sans-serif;
+        font-size: 15px;
+        font-weight: 500;
+    }
+
+    .search-input::placeholder {
+        color: #94a3b8 !important;
+        opacity: 1 !important;
+    }
+
+    .count-chip {
+        margin-left: 12px;
+        flex-shrink: 0;
+        color: #4f46e5;
+        background: #eef2ff;
+        padding: 7px 13px;
+        border-radius: 20px;
+        font-family: Arial, sans-serif;
+        font-size: 12px;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+
+    /* ================= JOB GRID ================= */
+
+    .jobs-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+        gap: 20px;
+    }
+
+
+    /* ================= JOB CARD ================= */
+
+    .job-card {
+        background: #ffffff;
+        border: 1px solid #e5e7eb;
+        border-radius: 18px;
+        padding: 26px 28px;
+        height: 100%;
+        position: relative;
+        overflow: hidden;
+        transition: all 0.25s ease;
+        box-shadow: 0 1px 3px rgba(15, 23, 42, 0.03);
+        display: flex;
+        flex-direction: column;
+    }
+
+    .job-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 32px rgba(99, 102, 241, 0.1);
+        border-color: #dbeafe;
+    }
+
+
+    /* ================= COMPANY ================= */
+
+    .company-row {
+        display: flex;
+        align-items: center;
+        gap: 11px;
+        margin-bottom: 14px;
+    }
+
+    .company-logo {
+        width: 42px;
+        height: 42px;
+        border-radius: 11px;
+        background: linear-gradient(135deg, #6366f1, #a855f7);
+        color: #ffffff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: 'Bricolage Grotesque', sans-serif;
+        font-size: 18px;
+        font-weight: 700;
+        flex-shrink: 0;
+    }
+
+    .company-info {
+        min-width: 0;
+    }
+
+    .company-name {
+        font-size: 13.5px;
+        font-weight: 700;
+        color: #6366f1;
+        margin: 0;
+    }
+
+    .company-location {
+        font-size: 11.5px;
+        font-weight: 500;
+        color: #94a3b8;
+        margin: 2px 0 0;
+    }
+
+
+    /* ================= JOB DETAILS ================= */
+
+    .job-title {
+        font-family: 'Bricolage Grotesque', sans-serif;
+        font-size: 20px;
+        font-weight: 700;
+        color: #0f172a;
+        margin: 0 0 10px;
+        letter-spacing: -0.5px;
+    }
+
+    .job-description {
+        font-size: 13.5px;
+        color: #475569;
+        line-height: 1.6;
+        margin: 0 0 18px;
+        font-weight: 500;
+    }
+
+
+    /* ================= META ================= */
+
+    .job-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-bottom: 20px;
+    }
+
+    .meta-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 12px;
+        font-weight: 600;
+        color: #475569;
+        padding: 6px 11px;
+        background: #f8fafc;
+        border: 1px solid #e5e7eb;
+        border-radius: 20px;
+    }
+
+    .meta-chip i {
+        color: #6366f1;
+        font-size: 12px;
+    }
+
+    .meta-chip strong {
+        color: #0f172a;
+    }
+
+
+    /* ================= FOOTER ================= */
+
+    .job-footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding-top: 18px;
+        border-top: 1px solid #f1f5f9;
+        margin-top: auto;
+    }
+
+    .btn-view {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        background: linear-gradient(135deg, #6366f1, #a855f7);
+        color: #ffffff;
+        border: none;
+        padding: 11px 20px;
+        border-radius: 10px;
+        font-size: 13px;
+        font-weight: 700;
+        text-decoration: none;
+        transition: all 0.25s ease;
+    }
+
+    .btn-view:hover {
+        color: #ffffff;
+        transform: translateY(-2px);
+    }
+
+    .posted-time {
+        font-size: 11.5px;
+        font-weight: 600;
+        color: #94a3b8;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+
+    /* ================= EMPTY STATE ================= */
+
+    .empty-card {
+        background: #ffffff;
+        border: 1px solid #e5e7eb;
+        border-radius: 20px;
+        padding: 60px 30px;
+        text-align: center;
+    }
+
+    .empty-icon-wrap {
+        width: 76px;
+        height: 76px;
+        border-radius: 50%;
+        background: #eef2ff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 20px;
+    }
+
+    .empty-icon-wrap i {
+        font-size: 32px;
+        color: #6366f1;
+    }
+
+    .empty-card h3 {
+        font-family: 'Bricolage Grotesque', sans-serif;
+        font-size: 20px;
+        font-weight: 700;
+        color: #0f172a;
+        margin-bottom: 8px;
+    }
+
+    .empty-card p {
+        font-size: 14px;
+        color: #64748b;
+    }
+
+
+    /* ================= RESPONSIVE ================= */
+
+    @media (max-width: 900px) {
+
+        .jobs-grid {
+            grid-template-columns: 1fr;
+        }
+
+    }
+
+    @media (max-width: 600px) {
+
+        .page-header h1 {
+            font-size: 30px;
+        }
+
+        .search-box {
+            min-height: 54px;
+            padding: 7px 10px;
+        }
+
+        .search-icon {
+            width: 36px;
+            height: 36px;
+            min-width: 36px;
+            margin-right: 9px;
+        }
+
+        .search-input {
+            font-size: 13px;
+        }
+
+        .count-chip {
+            display: none;
+        }
+
+        .job-card {
+            padding: 22px;
+        }
+
+        .job-footer {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .back-dashboard {
+            width: fit-content;
+        }
+
+    }
+</style>
+
+{% endblock %}
+
+
+{% block content %}
+
+<!-- ================= PAGE HEADER ================= -->
+
+<div class="page-header">
+
+    <h1>Available Jobs</h1>
+
+    <p>
+        Find jobs that match your skills and interests.
+    </p>
+
+    <!-- BACK TO DASHBOARD -->
+
+    <a href="{% url 'accounts:dashboard' %}" class="back-dashboard">
+        <i class="bi bi-arrow-left"></i>
+        Back to Dashboard
+    </a>
+
+</div>
+
+
+<!-- ================= SEARCH BAR ================= -->
+
+<div class="search-wrapper">
+
+    <div class="search-box">
+
+        <div class="search-icon">
+            <i class="bi bi-search"></i>
+        </div>
+
+        <input type="text" id="jobSearch" class="search-input" placeholder="Search jobs by title, skills or company..."
+            autocomplete="off">
+
+        {% if jobs %}
+
+        <span class="count-chip">
+            {{ jobs|length }} jobs
+        </span>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+
+<!-- ================= JOBS ================= -->
+
+{% if jobs %}
+
+<div class="jobs-grid">
+
+    {% for job in jobs %}
+
+    <div class="job-card">
+
+        <!-- COMPANY -->
+
+        <div class="company-row">
+
+            <div class="company-logo">
+                {{ job.company.name|slice:":1"|upper }}
+            </div>
+
+            <div class="company-info">
+
+                <p class="company-name">
+                    {{ job.company.name }}
+                </p>
+
+                {% if job.location %}
+
+                <p class="company-location">
+                    {{ job.location }}
+                </p>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+
+        <!-- JOB TITLE -->
+
+        <h4 class="job-title">
+            {{ job.title }}
+        </h4>
+
+
+        <!-- DESCRIPTION -->
+
+        <p class="job-description">
+            {{ job.description|truncatewords:25 }}
+        </p>
+
+
+        <!-- META -->
+
+        <div class="job-meta">
+
+            <span class="meta-chip">
+                <i class="bi bi-tools"></i>
+                <strong>Skills:</strong>
+                {{ job.skills }}
+            </span>
+
+            <span class="meta-chip">
+                <i class="bi bi-geo-alt"></i>
+                <strong>Location:</strong>
+                {{ job.location }}
+            </span>
+
+            <span class="meta-chip">
+                <i class="bi bi-cash-stack"></i>
+                <strong>Salary:</strong>
+                {{ job.salary }}
+            </span>
+
+        </div>
+
+
+        <!-- FOOTER -->
+
+        <div class="job-footer">
+
+            <a href="{% url 'jobs:job_detail' job.id %}" class="btn-view">
+                View Job
+                <i class="bi bi-arrow-right"></i>
+            </a>
+
+            <span class="posted-time">
+                <i class="bi bi-clock"></i>
+                Recently posted
+            </span>
+
+        </div>
+
+    </div>
+
+    {% endfor %}
+
+</div>
+
+
+{% else %}
+
+<!-- ================= EMPTY STATE ================= -->
+
+<div class="empty-card">
+
+    <div class="empty-icon-wrap">
+
+        <i class="bi bi-search"></i>
+
+    </div>
+
+    <h3>
+        No jobs available
+    </h3>
+
+    <p>
+        No jobs are currently available.
+    </p>
+
+</div>
+
+{% endif %}
+
+
+<!-- ================= SEARCH SCRIPT ================= -->
+
+<script>
+
+    document.addEventListener("DOMContentLoaded", function () {
+
+        const searchInput = document.getElementById("jobSearch");
+        const jobCards = document.querySelectorAll(".job-card");
+
+        if (!searchInput) {
+            return;
+        }
+
+        searchInput.addEventListener("input", function () {
+
+            const query = this.value.toLowerCase().trim();
+
+            jobCards.forEach(function (card) {
+
+                const text = card.textContent.toLowerCase();
+
+                if (text.includes(query)) {
+                    card.style.display = "";
+                } else {
+                    card.style.display = "none";
+                }
+
+            });
+
+        });
+
+    });
+
+</script>
+
+{% endblock %}

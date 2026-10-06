@@ -1,0 +1,577 @@
+{% extends "base.html" %}
+
+{% block title %}My Applications — HireHub{% endblock %}
+
+{% block extra_head %}
+<link
+    href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700;12..96,800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
+<style>
+    body {
+        background: #f8fafc;
+    }
+
+    /* ==============================
+       PAGE HEADER
+       ============================== */
+    .page-header {
+        margin-bottom: 26px;
+    }
+
+    .page-title {
+        font-family: "Bricolage Grotesque", sans-serif;
+        font-weight: 700;
+        color: #0f172a;
+        font-size: 38px;
+        letter-spacing: -1.4px;
+        line-height: 1.05;
+        margin-bottom: 6px;
+        font-variation-settings: "opsz" 48;
+    }
+
+    .page-subtitle {
+        color: #64748b;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 14px;
+        font-weight: 500;
+        margin: 0;
+    }
+
+    /* ==============================
+       SUMMARY BAR
+       ============================== */
+    .summary-bar {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-bottom: 26px;
+    }
+
+    .summary-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 9px 15px;
+        background: #fff;
+        border: 1px solid #e5e7eb;
+        border-radius: 12px;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 12.5px;
+        font-weight: 700;
+        color: #475569;
+        letter-spacing: -0.1px;
+    }
+
+    .summary-chip i {
+        font-size: 14px;
+        color: #6366f1;
+    }
+
+    /* ==============================
+       APPLICATION CARD
+       ============================== */
+    .application-card {
+        background: #fff;
+        border: 1px solid #e5e7eb;
+        border-radius: 20px;
+        padding: 26px;
+        height: 100%;
+        transition: all 0.32s cubic-bezier(0.16, 1, 0.3, 1);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .application-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, #6366f1, #8b5cf6, #a855f7);
+        opacity: 0;
+        transition: opacity 0.32s ease;
+    }
+
+    .application-card:hover {
+        transform: translateY(-5px);
+        border-color: #c7d2fe;
+        box-shadow:
+            0 20px 40px rgba(15, 23, 42, 0.08),
+            0 4px 12px rgba(99, 102, 241, 0.06);
+    }
+
+    .application-card:hover::before {
+        opacity: 1;
+    }
+
+    /* ==============================
+       COMPANY ROW
+       ============================== */
+    .company-row {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        margin-bottom: 20px;
+    }
+
+    .company-icon {
+        width: 52px;
+        height: 52px;
+        border-radius: 14px;
+        background: linear-gradient(135deg, #6366f1, #a855f7);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: 'Bricolage Grotesque', sans-serif;
+        font-weight: 700;
+        font-size: 22px;
+        letter-spacing: -0.5px;
+        flex-shrink: 0;
+        box-shadow: 0 8px 20px rgba(99, 102, 241, 0.28);
+        position: relative;
+    }
+
+    /* Bottom-right check badge */
+    .company-icon::after {
+        content: "\f26e";
+        font-family: "bootstrap-icons";
+        position: absolute;
+        bottom: -4px;
+        right: -4px;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: #10b981;
+        color: white;
+        border: 2.5px solid #fff;
+        font-size: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .company-info {
+        min-width: 0;
+        flex: 1;
+    }
+
+    .company-name {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 14.5px;
+        font-weight: 700;
+        color: #0f172a;
+        margin-bottom: 3px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .info {
+        color: #64748b;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 12.5px;
+        font-weight: 500;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .info i {
+        color: #94a3b8;
+        font-size: 12px;
+    }
+
+    /* ==============================
+       JOB TITLE
+       ============================== */
+    .job-title {
+        font-family: 'Bricolage Grotesque', sans-serif;
+        font-weight: 700;
+        color: #0f172a;
+        font-size: 20px;
+        letter-spacing: -0.6px;
+        line-height: 1.25;
+        margin-bottom: 14px;
+        font-variation-settings: "opsz" 24;
+    }
+
+    /* ==============================
+       APPLIED DATE
+       ============================== */
+    .applied-date {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 12.5px;
+        font-weight: 600;
+        color: #64748b;
+        padding: 7px 12px;
+        background: #f8fafc;
+        border: 1px solid #e5e7eb;
+        border-radius: 10px;
+        margin-bottom: 16px;
+    }
+
+    .applied-date i {
+        color: #6366f1;
+        font-size: 12px;
+    }
+
+    /* ==============================
+       STATUS BADGES
+       ============================== */
+    .badges-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-bottom: 22px;
+    }
+
+    .status-badge,
+    .match-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 7px 13px;
+        border-radius: 20px;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.2px;
+    }
+
+    /* Status color variants */
+    .status-badge.pending {
+        background: #fffbeb;
+        color: #b45309;
+        border: 1px solid #fde68a;
+    }
+
+    .status-badge.applied {
+        background: #eef2ff;
+        color: #4f46e5;
+        border: 1px solid #c7d2fe;
+    }
+
+    .status-badge.shortlisted {
+        background: #ecfdf5;
+        color: #047857;
+        border: 1px solid #bbf7d0;
+    }
+
+    .status-badge.rejected {
+        background: #fef2f2;
+        color: #b91c1c;
+        border: 1px solid #fecaca;
+    }
+
+    .status-badge::before {
+        content: "";
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: currentColor;
+        opacity: 0.7;
+    }
+
+    /* Match badge */
+    .match-badge {
+        background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+        color: #047857;
+        border: 1px solid #bbf7d0;
+    }
+
+    .match-badge i {
+        color: #10b981;
+        font-size: 12px;
+    }
+
+    /* ==============================
+       VIEW JOB BUTTON
+       ============================== */
+    .btn-view-job {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        background: #0f172a;
+        color: #fff;
+        padding: 11px 22px;
+        border-radius: 11px;
+        text-decoration: none;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: -0.1px;
+        transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        box-shadow: 0 6px 17px rgba(15, 23, 42, 0.18);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .btn-view-job::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
+        transition: left 0.6s ease;
+    }
+
+    .btn-view-job:hover::before {
+        left: 100%;
+    }
+
+    .btn-view-job:hover {
+        color: #fff;
+        background: #1e293b;
+        transform: translateY(-2px);
+        box-shadow: 0 12px 26px rgba(15, 23, 42, 0.28);
+    }
+
+    /* ==============================
+       EMPTY APPLICATIONS STATE
+       ============================== */
+    .empty-applications {
+        background: #fff;
+        border: 1px solid #e5e7eb;
+        border-radius: 22px;
+        padding: 64px 30px;
+        text-align: center;
+        box-shadow: 0 1px 3px rgba(15, 23, 42, 0.03);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .empty-applications::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, #6366f1, #a855f7);
+    }
+
+    .empty-icon-wrap {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #eef2ff, #faf5ff);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 22px;
+        border: 1px solid #e0e7ff;
+    }
+
+    .empty-icon-wrap i {
+        font-size: 34px;
+        color: #6366f1;
+    }
+
+    .empty-applications h3 {
+        font-family: "Bricolage Grotesque", sans-serif;
+        font-size: 22px;
+        font-weight: 700;
+        color: #0f172a;
+        margin-bottom: 10px;
+        letter-spacing: -0.4px;
+    }
+
+    .empty-applications p {
+        color: #64748b;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 14px;
+        line-height: 1.65;
+        max-width: 460px;
+        margin: 0 auto 24px;
+        font-weight: 500;
+    }
+
+    .btn-browse-jobs {
+        display: inline-flex;
+        align-items: center;
+        gap: 9px;
+        background: linear-gradient(135deg, #6366f1, #8b5cf6);
+        color: white;
+        padding: 13px 24px;
+        border-radius: 12px;
+        text-decoration: none;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 13.5px;
+        font-weight: 700;
+        transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        box-shadow: 0 8px 22px rgba(99, 102, 241, 0.28);
+        position: relative;
+        overflow: hidden;
+        letter-spacing: -0.1px;
+    }
+
+    .btn-browse-jobs::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        transition: left 0.6s ease;
+    }
+
+    .btn-browse-jobs:hover::before {
+        left: 100%;
+    }
+
+    .btn-browse-jobs:hover {
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 14px 32px rgba(99, 102, 241, 0.42);
+    }
+
+    /* ==============================
+       RESPONSIVE
+       ============================== */
+    @media (max-width: 700px) {
+        .page-title {
+            font-size: 30px;
+            letter-spacing: -1px;
+        }
+
+        .application-card {
+            padding: 22px;
+            border-radius: 18px;
+        }
+
+        .company-icon {
+            width: 46px;
+            height: 46px;
+            font-size: 20px;
+        }
+
+        .job-title {
+            font-size: 18px;
+        }
+
+        .empty-applications {
+            padding: 48px 22px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div class="container py-5">
+
+    <!-- Page Header -->
+    <div class="page-header">
+        <h1 class="page-title">My Applications</h1>
+        <p class="page-subtitle">Track your applications and application status.</p>
+    </div>
+
+    {% if applications %}
+
+    <!-- Summary Bar -->
+    <div class="summary-bar">
+        <span class="summary-chip">
+            <i class="bi bi-file-earmark-text-fill"></i>
+            {{ applications|length }} Application{{ applications|length|pluralize }}
+        </span>
+    </div>
+
+    <!-- Applications Grid -->
+    <div class="row g-4">
+
+        {% for application in applications %}
+
+        <div class="col-lg-6">
+            <div class="application-card">
+
+                <!-- Company -->
+                <div class="company-row">
+                    <div class="company-icon">
+                        {{ application.job.company.name|slice:":1"|upper }}
+                    </div>
+                    <div class="company-info">
+                        <div class="company-name">
+                            {{ application.job.company.name }}
+                        </div>
+                        <div class="info">
+                            <i class="bi bi-geo-alt"></i>
+                            {{ application.job.location }}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Job -->
+                <h4 class="job-title">{{ application.job.title }}</h4>
+
+                <!-- Applied date -->
+                <div class="applied-date">
+                    <i class="bi bi-calendar3"></i>
+                    Applied {{ application.applied_at|date:"d M Y" }}
+                </div>
+
+                <!-- Status + Match -->
+                <div class="badges-row">
+                    <span class="status-badge 
+                        {% if application.status == 'SHORTLISTED' %}shortlisted
+                        {% elif application.status == 'REJECTED' %}rejected
+                        {% elif application.status == 'APPLIED' %}applied
+                        {% else %}pending{% endif %}">
+                        {{ application.get_status_display }}
+                    </span>
+
+                    <span class="match-badge">
+                        <i class="bi bi-stars"></i>
+                        {{ application.match_percentage|floatformat:0 }}% Match
+                    </span>
+                </div>
+
+                <!-- View Job -->
+                <a href="{% url 'jobs:job_detail' application.job.id %}" class="btn-view-job">
+                    <i class="bi bi-arrow-right"></i>
+                    View Job
+                </a>
+
+            </div>
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+    {% else %}
+
+    <!-- Empty State -->
+    <div class="empty-applications">
+
+        <div class="empty-icon-wrap">
+            <i class="bi bi-file-earmark-text"></i>
+        </div>
+
+        <h3>No Applications Yet</h3>
+
+        <p>
+            You haven't applied for any jobs yet.
+            Start exploring opportunities that match your skills.
+        </p>
+
+        <a href="{% url 'jobs:job_list' %}" class="btn-browse-jobs">
+            <i class="bi bi-search"></i>
+            Browse Jobs
+        </a>
+
+    </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

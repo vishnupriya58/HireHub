@@ -1,0 +1,974 @@
+﻿{% extends "base.html" %}
+
+{% block title %}Dashboard — HireHub{% endblock %}
+
+{% block extra_head %}
+
+<link
+    href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700;12..96,800&display=swap"
+    rel="stylesheet">
+
+<style>
+    .dashboard-page {
+        padding-bottom: 40px;
+    }
+
+    .page-header {
+        margin-bottom: 24px;
+    }
+
+    .page-header h1 {
+        font-family: 'Bricolage Grotesque', sans-serif !important;
+        font-size: 38px;
+        font-weight: 700;
+        letter-spacing: -1.5px;
+        line-height: 1.05;
+        margin-bottom: 6px;
+        color: #0f172a;
+        font-variation-settings: "opsz" 48;
+    }
+
+    .page-header p {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 14px;
+        font-weight: 500;
+        color: #64748b;
+        margin: 0;
+    }
+
+
+    /* =========================================================
+       WELCOME BANNER
+    ========================================================= */
+
+    .welcome-banner {
+        background:
+            radial-gradient(circle at 88% 20%, rgba(255, 255, 255, 0.18), transparent 30%),
+            radial-gradient(circle at 12% 90%, rgba(255, 255, 255, 0.10), transparent 35%),
+            linear-gradient(135deg, #4338ca 0%, #6366f1 45%, #8b5cf6 100%);
+        border-radius: 26px;
+        padding: 38px 40px;
+        color: #fff;
+        position: relative;
+        overflow: hidden;
+        margin-bottom: 28px;
+        box-shadow: 0 20px 45px rgba(79, 70, 229, 0.22);
+    }
+
+    .welcome-banner::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background-image: radial-gradient(circle,
+                rgba(255, 255, 255, 0.08) 1px,
+                transparent 1px);
+        background-size: 22px 22px;
+        opacity: 0.7;
+        pointer-events: none;
+    }
+
+    .welcome-banner::after {
+        content: "";
+        position: absolute;
+        width: 320px;
+        height: 320px;
+        border-radius: 50%;
+        border: 1px solid rgba(255, 255, 255, 0.10);
+        right: -130px;
+        top: -160px;
+        pointer-events: none;
+    }
+
+    .welcome-inner {
+        position: relative;
+        z-index: 2;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 24px;
+        flex-wrap: wrap;
+    }
+
+
+    /* PROFILE AREA */
+
+    .welcome-profile {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .dashboard-avatar {
+        position: relative;
+        width: 78px;
+        height: 78px;
+        border-radius: 20px;
+        background: linear-gradient(135deg,
+                rgba(255, 255, 255, 0.24),
+                rgba(255, 255, 255, 0.10));
+        border: 2.5px solid rgba(255, 255, 255, 0.55);
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        box-shadow: 0 10px 24px rgba(0, 0, 0, 0.16);
+        font-family: 'Bricolage Grotesque', sans-serif;
+        font-size: 30px;
+        font-weight: 700;
+        color: #fff;
+        letter-spacing: -1px;
+    }
+
+    .dashboard-avatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+    }
+
+    .dashboard-avatar::after {
+        content: "";
+        position: absolute;
+        bottom: 2px;
+        right: 2px;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        background: #34d399;
+        border: 3px solid #6366f1;
+        box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.5);
+    }
+
+    .welcome-text h2 {
+        font-family: 'Bricolage Grotesque', sans-serif;
+        font-size: 32px;
+        font-weight: 700;
+        letter-spacing: -1.2px;
+        margin: 0 0 8px;
+        color: #fff;
+        line-height: 1.15;
+    }
+
+    .welcome-text p {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 14.5px;
+        font-weight: 500;
+        margin: 0;
+        color: rgba(255, 255, 255, 0.88);
+        line-height: 1.5;
+    }
+
+    .welcome-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        padding: 10px 16px;
+        border-radius: 30px;
+        background: rgba(255, 255, 255, 0.14);
+        border: 1px solid rgba(255, 255, 255, 0.22);
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 12px;
+        font-weight: 700;
+        color: #fff;
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+    }
+
+    .welcome-badge i {
+        font-size: 13px;
+    }
+
+
+    /* =========================================================
+       STATS
+    ========================================================= */
+
+    .stat-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 16px;
+        margin-bottom: 28px;
+    }
+
+    .stat-card {
+        background: #fff;
+        border: 1px solid #e5e7eb;
+        border-radius: 20px;
+        padding: 24px;
+        position: relative;
+        overflow: hidden;
+        transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .stat-card:hover {
+        transform: translateY(-5px);
+        border-color: #c7d2fe;
+        box-shadow: 0 16px 34px rgba(15, 23, 42, 0.09);
+    }
+
+    .stat-card::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 3px;
+        background: linear-gradient(90deg, #6366f1, #a855f7);
+        opacity: 0;
+        transition: opacity 0.28s ease;
+    }
+
+    .stat-card:hover::after {
+        opacity: 1;
+    }
+
+    .stat-card::before {
+        content: "";
+        position: absolute;
+        top: -40px;
+        right: -40px;
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        background: radial-gradient(circle,
+                rgba(99, 102, 241, 0.08),
+                transparent 70%);
+        opacity: 0;
+        transition: opacity 0.28s ease;
+        pointer-events: none;
+    }
+
+    .stat-card:hover::before {
+        opacity: 1;
+    }
+
+    .stat-icon {
+        width: 46px;
+        height: 46px;
+        border-radius: 13px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        margin-bottom: 18px;
+        position: relative;
+    }
+
+    .stat-icon.indigo {
+        background: #eef2ff;
+        color: #4f46e5;
+    }
+
+    .stat-icon.green {
+        background: #ecfdf5;
+        color: #059669;
+    }
+
+    .stat-icon.amber {
+        background: #fffbeb;
+        color: #d97706;
+    }
+
+    .stat-icon.purple {
+        background: #faf5ff;
+        color: #9333ea;
+    }
+
+    .stat-label {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 10.5px;
+        font-weight: 800;
+        color: #94a3b8;
+        letter-spacing: 1.1px;
+        text-transform: uppercase;
+        margin-bottom: 8px;
+    }
+
+    .stat-value {
+        font-family: 'Bricolage Grotesque', sans-serif;
+        font-size: 36px;
+        font-weight: 700;
+        color: #0f172a;
+        letter-spacing: -1.6px;
+        line-height: 1;
+    }
+
+    .stat-value.accent {
+        background: linear-gradient(135deg, #4f46e5, #a855f7);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+
+    /* =========================================================
+       PANELS
+    ========================================================= */
+
+    .dashboard-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 18px;
+    }
+
+    .panel {
+        background: #fff;
+        border: 1px solid #e5e7eb;
+        border-radius: 22px;
+        padding: 28px;
+        box-shadow: 0 2px 6px rgba(15, 23, 42, 0.03);
+        transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .panel:hover {
+        transform: translateY(-3px);
+        border-color: #dbeafe;
+        box-shadow: 0 14px 32px rgba(15, 23, 42, 0.07);
+    }
+
+    .panel::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, #6366f1, #a855f7);
+        opacity: 0;
+        transition: opacity 0.28s ease;
+    }
+
+    .panel:hover::before {
+        opacity: 1;
+    }
+
+    .panel-header {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        margin-bottom: 18px;
+    }
+
+    .panel-header .icon-box {
+        width: 48px;
+        height: 48px;
+        border-radius: 13px;
+        background: linear-gradient(135deg, #eef2ff, #faf5ff);
+        color: #6366f1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        flex-shrink: 0;
+        border: 1px solid #e0e7ff;
+    }
+
+    .panel-header h4 {
+        font-family: 'Bricolage Grotesque', sans-serif;
+        font-size: 18px;
+        font-weight: 700;
+        color: #0f172a;
+        margin: 0;
+        letter-spacing: -0.5px;
+    }
+
+    .panel-body p {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 13.5px;
+        color: #64748b;
+        margin: 0 0 20px;
+        line-height: 1.7;
+        font-weight: 500;
+    }
+
+
+    /* =========================================================
+       BUTTONS
+    ========================================================= */
+
+    .action-row {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .btn-gradient,
+    .btn-ghost,
+    .btn-emerald,
+    .btn-dark {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 11px 18px;
+        border-radius: 11px;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 12.5px;
+        font-weight: 700;
+        text-decoration: none;
+        cursor: pointer;
+        transition: all 0.22s ease;
+        white-space: nowrap;
+        letter-spacing: -0.1px;
+    }
+
+    .btn-gradient {
+        background: linear-gradient(135deg, #6366f1, #8b5cf6);
+        color: #fff;
+        border: none;
+        box-shadow: 0 6px 18px rgba(99, 102, 241, 0.25);
+    }
+
+    .btn-gradient:hover {
+        color: #fff;
+        transform: translateY(-2px);
+        box-shadow: 0 10px 26px rgba(99, 102, 241, 0.38);
+    }
+
+    .btn-ghost {
+        background: #fff;
+        color: #475569;
+        border: 1.5px solid #e2e8f0;
+    }
+
+    .btn-ghost:hover {
+        color: #4f46e5;
+        background: #f8fafc;
+        border-color: #c7d2fe;
+        transform: translateY(-2px);
+    }
+
+    .btn-emerald {
+        background: linear-gradient(135deg, #10b981, #059669);
+        color: #fff;
+        border: none;
+        box-shadow: 0 6px 18px rgba(16, 185, 129, 0.22);
+    }
+
+    .btn-emerald:hover {
+        color: #fff;
+        transform: translateY(-2px);
+        box-shadow: 0 10px 26px rgba(16, 185, 129, 0.35);
+    }
+
+    .btn-dark {
+        background: #0f172a;
+        color: #fff;
+        border: none;
+        box-shadow: 0 6px 18px rgba(15, 23, 42, 0.18);
+    }
+
+    .btn-dark:hover {
+        color: #fff;
+        background: #1e293b;
+        transform: translateY(-2px);
+        box-shadow: 0 10px 26px rgba(15, 23, 42, 0.3);
+    }
+
+
+    /* =========================================================
+       RESPONSIVE
+    ========================================================= */
+
+    @media (max-width: 1000px) {
+
+        .stat-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .dashboard-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media (max-width: 700px) {
+
+        .page-header h1 {
+            font-size: 30px;
+            letter-spacing: -1px;
+        }
+
+        .welcome-banner {
+            padding: 26px 22px;
+            border-radius: 20px;
+        }
+
+        .welcome-inner {
+            align-items: flex-start;
+        }
+
+        .welcome-profile {
+            gap: 14px;
+        }
+
+        .dashboard-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 16px;
+            font-size: 24px;
+        }
+
+        .dashboard-avatar::after {
+            width: 13px;
+            height: 13px;
+            border-width: 2.5px;
+        }
+
+        .welcome-text h2 {
+            font-size: 24px;
+            letter-spacing: -0.8px;
+        }
+
+        .welcome-text p {
+            font-size: 13px;
+        }
+
+        .welcome-badge {
+            display: none;
+        }
+
+        .stat-grid {
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .stat-card {
+            padding: 18px;
+            border-radius: 16px;
+        }
+
+        .stat-icon {
+            width: 40px;
+            height: 40px;
+            font-size: 17px;
+            margin-bottom: 14px;
+        }
+
+        .stat-value {
+            font-size: 30px;
+            letter-spacing: -1.2px;
+        }
+
+        .panel {
+            padding: 22px 20px;
+            border-radius: 18px;
+        }
+
+        .panel-header .icon-box {
+            width: 42px;
+            height: 42px;
+            font-size: 17px;
+        }
+
+        .action-row {
+            flex-direction: column;
+        }
+
+        .action-row a {
+            width: 100%;
+        }
+    }
+
+    @media (max-width: 430px) {
+
+        .stat-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .welcome-profile {
+            align-items: flex-start;
+        }
+
+        .welcome-text h2 {
+            font-size: 21px;
+        }
+    }
+</style>
+
+{% endblock %}
+
+
+{% block content %}
+
+<div class="dashboard-page">
+
+    <!-- PAGE HEADER -->
+
+    <div class="page-header">
+
+        <h1>
+            Dashboard
+        </h1>
+
+        <p>
+            Manage your job search from one place.
+        </p>
+
+    </div>
+
+
+    <!-- WELCOME BANNER -->
+
+    <div class="welcome-banner">
+
+        <div class="welcome-inner">
+
+            <div class="welcome-profile">
+
+                <!-- PROFILE PICTURE -->
+
+                <div class="dashboard-avatar">
+
+                    {% if user.profile.profile_picture %}
+
+                    <img src="{{ user.profile.profile_picture.url }}" alt="Profile Picture">
+
+                    {% else %}
+
+                    {{ user.username|slice:":1"|upper }}
+
+                    {% endif %}
+
+                </div>
+
+
+                <!-- WELCOME TEXT -->
+
+                <div class="welcome-text">
+
+                    <h2>
+                        Welcome, {{ user.username }} 👋
+                    </h2>
+
+                    <p>
+                        Discover opportunities, track applications,
+                        and take the next step in your career.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- ROLE -->
+
+            <div class="welcome-badge">
+
+                <i class="bi bi-person-check-fill"></i>
+
+                Job Seeker
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- STAT CARDS -->
+
+    <div class="stat-grid">
+
+        <!-- RESUMES -->
+
+        <div class="stat-card">
+
+            <div class="stat-icon indigo">
+
+                <i class="bi bi-file-earmark-text-fill"></i>
+
+            </div>
+
+            <div class="stat-label">
+                Resumes
+            </div>
+
+            <div class="stat-value accent">
+                {{ resume_count|default:0 }}
+            </div>
+
+        </div>
+
+
+        <!-- APPLICATIONS -->
+
+        <div class="stat-card">
+
+            <div class="stat-icon green">
+
+                <i class="bi bi-check-circle-fill"></i>
+
+            </div>
+
+            <div class="stat-label">
+                Applications
+            </div>
+
+            <div class="stat-value">
+                {{ application_count|default:0 }}
+            </div>
+
+        </div>
+
+
+        <!-- SAVED JOBS -->
+
+        <div class="stat-card">
+
+            <div class="stat-icon amber">
+
+                <i class="bi bi-bookmark-fill"></i>
+
+            </div>
+
+            <div class="stat-label">
+                Saved Jobs
+            </div>
+
+            <div class="stat-value">
+                0
+            </div>
+
+        </div>
+
+
+        <!-- AVG MATCH -->
+
+        <div class="stat-card">
+
+            <div class="stat-icon purple">
+
+                <i class="bi bi-graph-up-arrow"></i>
+
+            </div>
+
+            <div class="stat-label">
+                Avg Match
+            </div>
+
+            <div class="stat-value">
+                —
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ACTION PANELS -->
+
+    <div class="dashboard-grid">
+
+
+        <!-- FIND JOB -->
+
+        <div class="panel">
+
+            <div class="panel-header">
+
+                <div class="icon-box">
+
+                    <i class="bi bi-briefcase-fill"></i>
+
+                </div>
+
+                <h4>
+                    Find Your Next Job
+                </h4>
+
+            </div>
+
+            <div class="panel-body">
+
+                <p>
+                    Explore available opportunities and discover
+                    positions that match your skills and experience.
+                </p>
+
+                <div class="action-row">
+
+                    <a href="{% url 'jobs:job_list' %}" class="btn-gradient">
+
+                        <i class="bi bi-search"></i>
+
+                        Browse Jobs
+
+                    </a>
+
+                    <a href="{% url 'accounts:profile' %}" class="btn-ghost">
+
+                        <i class="bi bi-person"></i>
+
+                        Profile
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- RESUME -->
+
+        <div class="panel">
+
+            <div class="panel-header">
+
+                <div class="icon-box">
+
+                    <i class="bi bi-cloud-arrow-up-fill"></i>
+
+                </div>
+
+                <h4>
+                    Your Resume
+                </h4>
+
+            </div>
+
+            <div class="panel-body">
+
+                {% if resume_count|default:0 > 0 %}
+
+                <!-- RESUME EXISTS -->
+
+                <p>
+                    Your resume is uploaded successfully.
+                    You can upload a newer version whenever you need.
+                </p>
+
+                <div class="action-row">
+
+                    <a href="{% url 'accounts:upload_resume' %}" class="btn-emerald">
+
+                        <i class="bi bi-arrow-up-circle"></i>
+
+                        Update Resume
+
+                    </a>
+
+                </div>
+
+                {% else %}
+
+                <!-- EMPTY RESUME STATE -->
+
+                <p>
+                    You haven't uploaded a resume yet.
+                    Upload your resume to start applying for jobs
+                    and improve your chances of matching with
+                    suitable opportunities.
+                </p>
+
+                <div class="action-row">
+
+                    <a href="{% url 'accounts:upload_resume' %}" class="btn-emerald">
+
+                        <i class="bi bi-cloud-arrow-up"></i>
+
+                        Upload Your Resume
+
+                    </a>
+
+                </div>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+
+        <!-- APPLICATIONS -->
+
+        <div class="panel">
+
+            <div class="panel-header">
+
+                <div class="icon-box">
+
+                    <i class="bi bi-file-earmark-check-fill"></i>
+
+                </div>
+
+                <h4>
+                    My Applications
+                </h4>
+
+            </div>
+
+            <div class="panel-body">
+
+                <p>
+                    Track the jobs you have applied for and monitor
+                    your application status.
+                </p>
+
+                <div class="action-row">
+
+                    <a href="{% url 'applications:my_applications' %}" class="btn-dark">
+
+                        <i class="bi bi-list-check"></i>
+
+                        View Applications
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- CAREER TIP -->
+
+        <div class="panel">
+
+            <div class="panel-header">
+
+                <div class="icon-box">
+
+                    <i class="bi bi-lightbulb-fill"></i>
+
+                </div>
+
+                <h4>
+                    Career Tip
+                </h4>
+
+            </div>
+
+            <div class="panel-body">
+
+                <p>
+                    A complete profile and updated resume can help
+                    recruiters understand your skills more quickly.
+                </p>
+
+                <div class="action-row">
+
+                    <a href="{% url 'accounts:profile' %}" class="btn-ghost">
+
+                        <i class="bi bi-person-lines-fill"></i>
+
+                        Complete Profile
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,693 @@
+{% extends "base.html" %}
+
+{% block title %}Upload Resume — HireHub{% endblock %}
+
+{% block extra_head %}
+<link
+    href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700;12..96,800&display=swap"
+    rel="stylesheet">
+<style>
+    /* ========== PAGE HEADER ========== */
+    .page-header h1 {
+        font-family: 'Bricolage Grotesque', -apple-system, sans-serif !important;
+        font-size: 38px;
+        font-weight: 700;
+        letter-spacing: -1.4px;
+        line-height: 1.05;
+        margin-bottom: 6px;
+        color: #0f172a;
+        font-variation-settings: "opsz" 48;
+    }
+
+    .page-header p {
+        font-family: 'Bricolage Grotesque', sans-serif !important;
+        font-size: 14px;
+        font-weight: 500;
+        color: #64748b;
+        margin: 0;
+        letter-spacing: -0.1px;
+        line-height: 1.5;
+    }
+
+    /* ========== LAYOUT ========== */
+    .upload-layout {
+        display: grid;
+        grid-template-columns: 1.6fr 1fr;
+        gap: 24px;
+        align-items: start;
+    }
+
+    @media (max-width: 900px) {
+        .upload-layout {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    /* ========== MAIN CARD ========== */
+    .upload-card {
+        background: #fff;
+        border: 1px solid #e5e7eb;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04), 0 8px 24px rgba(15, 23, 42, 0.04);
+        position: relative;
+        transition: box-shadow 0.3s ease;
+    }
+
+    .upload-card:hover {
+        box-shadow: 0 4px 12px rgba(15, 23, 42, 0.06), 0 16px 40px rgba(99, 102, 241, 0.08);
+    }
+
+    .upload-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%);
+    }
+
+    .upload-card-body {
+        padding: 34px 36px 30px;
+    }
+
+    .upload-header {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        margin-bottom: 24px;
+        padding-bottom: 22px;
+        border-bottom: 1px solid #f1f5f9;
+    }
+
+    .upload-header .icon-badge {
+        width: 52px;
+        height: 52px;
+        border-radius: 14px;
+        background: linear-gradient(135deg, #6366f1, #a855f7);
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        flex-shrink: 0;
+        box-shadow: 0 8px 20px rgba(99, 102, 241, 0.3);
+    }
+
+    .upload-header h3 {
+        font-family: 'Bricolage Grotesque', sans-serif;
+        font-size: 22px;
+        font-weight: 700;
+        color: #0f172a;
+        margin: 0 0 4px;
+        letter-spacing: -0.6px;
+        font-variation-settings: "opsz" 32;
+    }
+
+    .upload-header p {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 13.5px;
+        color: #64748b;
+        margin: 0;
+        font-weight: 500;
+        line-height: 1.5;
+    }
+
+    /* ========== DROP ZONE ========== */
+    .dropzone {
+        border: 2px dashed #cbd5e1;
+        border-radius: 16px;
+        padding: 34px 24px;
+        text-align: center;
+        background: linear-gradient(180deg, #fafbfc 0%, #f8fafc 100%);
+        transition: all 0.25s ease;
+        cursor: pointer;
+        position: relative;
+        margin-bottom: 18px;
+    }
+
+    .dropzone:hover {
+        border-color: #a5b4fc;
+        background: linear-gradient(180deg, #f5f3ff 0%, #eef2ff 100%);
+        transform: translateY(-1px);
+    }
+
+    .dropzone.dragover {
+        border-color: #6366f1;
+        background: #eef2ff;
+        transform: scale(1.01);
+    }
+
+    .dropzone-icon {
+        width: 68px;
+        height: 68px;
+        border-radius: 20px;
+        background: linear-gradient(135deg, #eef2ff, #faf5ff);
+        color: #6366f1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 30px;
+        margin: 0 auto 16px;
+        border: 1px solid #e0e7ff;
+    }
+
+    .dropzone-title {
+        font-family: 'Bricolage Grotesque', sans-serif;
+        font-size: 16px;
+        font-weight: 700;
+        color: #0f172a;
+        margin-bottom: 6px;
+        letter-spacing: -0.3px;
+    }
+
+    .dropzone-subtitle {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 13px;
+        color: #64748b;
+        margin-bottom: 14px;
+        font-weight: 500;
+    }
+
+    .dropzone-browse {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: #fff;
+        color: #4f46e5;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 13px;
+        font-weight: 700;
+        padding: 8px 16px;
+        border-radius: 10px;
+        border: 1.5px solid #e0e7ff;
+        transition: all 0.2s ease;
+    }
+
+    .dropzone:hover .dropzone-browse {
+        background: #eef2ff;
+        border-color: #c7d2fe;
+    }
+
+    /* Hidden file input fills the dropzone */
+    .dropzone input[type="file"] {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        cursor: pointer;
+    }
+
+    /* File preview */
+    .file-preview {
+        display: none;
+        align-items: center;
+        gap: 12px;
+        padding: 14px 16px;
+        background: #f0fdf4;
+        border: 1.5px solid #bbf7d0;
+        border-radius: 12px;
+        margin-bottom: 18px;
+    }
+
+    .file-preview.show {
+        display: flex;
+    }
+
+    .file-preview .file-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        background: #dcfce7;
+        color: #16a34a;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        flex-shrink: 0;
+    }
+
+    .file-preview .file-info {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .file-preview .file-name {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 13.5px;
+        font-weight: 700;
+        color: #166534;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        margin-bottom: 2px;
+    }
+
+    .file-preview .file-size {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 11.5px;
+        color: #16a34a;
+        font-weight: 500;
+    }
+
+    /* Format hint */
+    .format-hint {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 12px 14px;
+        background: #f8fafc;
+        border: 1px solid #e5e7eb;
+        border-radius: 12px;
+        margin-bottom: 24px;
+    }
+
+    .format-hint i {
+        color: #6366f1;
+        font-size: 16px;
+    }
+
+    .format-hint span {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 12.5px;
+        color: #475569;
+        font-weight: 600;
+    }
+
+    .badge-pdf,
+    .badge-docx {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 10.5px;
+        font-weight: 800;
+        letter-spacing: 0.6px;
+        padding: 4px 9px;
+        border-radius: 6px;
+        text-transform: uppercase;
+    }
+
+    .badge-pdf {
+        background: #fef2f2;
+        color: #dc2626;
+    }
+
+    .badge-docx {
+        background: #eff6ff;
+        color: #2563eb;
+    }
+
+    /* Actions */
+    .upload-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        padding-top: 22px;
+        border-top: 1px solid #f1f5f9;
+    }
+
+    .btn-ghost {
+        background: #fff;
+        color: #475569;
+        border: 1.5px solid #e5e7eb;
+        padding: 12px 24px;
+        border-radius: 11px;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 13.5px;
+        font-weight: 700;
+        text-decoration: none;
+        transition: all 0.2s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        letter-spacing: -0.1px;
+    }
+
+    .btn-ghost:hover {
+        border-color: #c7d2fe;
+        background: #f9fafb;
+        color: #4f46e5;
+    }
+
+    .btn-upload {
+        background: linear-gradient(135deg, #6366f1, #a855f7);
+        color: #fff;
+        border: none;
+        padding: 12px 26px;
+        border-radius: 11px;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 13.5px;
+        font-weight: 700;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        cursor: pointer;
+        transition: all 0.25s ease;
+        box-shadow: 0 6px 20px rgba(99, 102, 241, 0.28);
+        letter-spacing: -0.1px;
+    }
+
+    .btn-upload:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 30px rgba(99, 102, 241, 0.42);
+    }
+
+    /* ========== SIDE PANELS ========== */
+    .side-panel {
+        background: #fff;
+        border: 1px solid #e5e7eb;
+        border-radius: 18px;
+        padding: 24px;
+        margin-bottom: 20px;
+        box-shadow: 0 1px 3px rgba(15, 23, 42, 0.03);
+    }
+
+    .side-panel h4 {
+        font-family: 'Bricolage Grotesque', sans-serif;
+        font-size: 15px;
+        font-weight: 700;
+        color: #0f172a;
+        margin: 0 0 16px;
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        letter-spacing: -0.3px;
+    }
+
+    .side-panel h4 i {
+        color: #6366f1;
+        font-size: 15px;
+    }
+
+    .tip-item {
+        display: flex;
+        gap: 11px;
+        padding: 11px 0;
+        border-bottom: 1px solid #f1f5f9;
+    }
+
+    .tip-item:last-child {
+        border-bottom: none;
+        padding-bottom: 0;
+    }
+
+    .tip-item:first-child {
+        padding-top: 0;
+    }
+
+    .tip-icon {
+        width: 30px;
+        height: 30px;
+        border-radius: 9px;
+        background: #eef2ff;
+        color: #6366f1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+        flex-shrink: 0;
+    }
+
+    .tip-text {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 12.5px;
+        color: #475569;
+        font-weight: 500;
+        line-height: 1.55;
+    }
+
+    .tip-text strong {
+        color: #0f172a;
+        font-weight: 700;
+    }
+
+    /* AI banner */
+    .ai-banner {
+        background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 60%, #a855f7 100%);
+        border-radius: 18px;
+        padding: 22px;
+        color: #fff;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .ai-banner::before {
+        content: "";
+        position: absolute;
+        top: -50px;
+        right: -50px;
+        width: 160px;
+        height: 160px;
+        background: radial-gradient(circle, rgba(255, 255, 255, 0.2) 0%, transparent 70%);
+        border-radius: 50%;
+    }
+
+    .ai-banner-content {
+        position: relative;
+        z-index: 1;
+    }
+
+    .ai-banner-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        background: rgba(255, 255, 255, 0.18);
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 10.5px;
+        font-weight: 700;
+        letter-spacing: 0.8px;
+        text-transform: uppercase;
+        padding: 5px 11px;
+        border-radius: 20px;
+        margin-bottom: 12px;
+    }
+
+    .ai-banner h5 {
+        font-family: 'Bricolage Grotesque', sans-serif;
+        font-size: 17px;
+        font-weight: 700;
+        margin: 0 0 6px;
+        line-height: 1.25;
+        letter-spacing: -0.4px;
+    }
+
+    .ai-banner p {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 12.5px;
+        opacity: 0.9;
+        margin: 0;
+        line-height: 1.55;
+        font-weight: 500;
+    }
+
+    /* Errors */
+    .errorlist {
+        list-style: none;
+        padding: 8px 13px;
+        margin: 7px 0 0;
+        background: #fef2f2;
+        color: #b91c1c;
+        border-radius: 9px;
+        border-left: 3px solid #dc2626;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 12px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    @media (max-width: 800px) {
+        .upload-card-body {
+            padding: 26px 22px 24px;
+        }
+
+        .dropzone {
+            padding: 28px 18px;
+        }
+
+        .upload-actions {
+            flex-direction: column;
+        }
+
+        .upload-actions .btn-upload,
+        .upload-actions .btn-ghost {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+    <h1>Upload Resume</h1>
+    <p>Upload your resume to get matched with suitable jobs</p>
+</div>
+
+<div class="upload-layout">
+
+    <!-- MAIN CARD -->
+    <div class="upload-card">
+        <div class="upload-card-body">
+
+            <div class="upload-header">
+                <div class="icon-badge">
+                    <i class="bi bi-file-earmark-arrow-up"></i>
+                </div>
+                <div>
+                    <h3>Upload Your Resume</h3>
+                    <p>Upload your resume to get matched with suitable jobs.</p>
+                </div>
+            </div>
+
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                <!-- DROP ZONE -->
+                <div class="dropzone" id="dropzone">
+                    <div class="dropzone-icon">
+                        <i class="bi bi-cloud-arrow-up"></i>
+                    </div>
+                    <div class="dropzone-title">Drag & drop your resume here</div>
+                    <div class="dropzone-subtitle">or click to browse from your computer</div>
+                    <div class="dropzone-browse">
+                        <i class="bi bi-folder2-open"></i> Choose File
+                    </div>
+                    {{ form.file }}
+                </div>
+
+                {% if form.file.errors %}
+                <ul class="errorlist">
+                    {% for error in form.file.errors %}
+                    <li><i class="bi bi-exclamation-circle"></i> {{ error }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+
+                <!-- FILE PREVIEW -->
+                <div class="file-preview" id="filePreview">
+                    <div class="file-icon">
+                        <i class="bi bi-file-earmark-check"></i>
+                    </div>
+                    <div class="file-info">
+                        <div class="file-name" id="fileName">filename.pdf</div>
+                        <div class="file-size" id="fileSize">0 KB</div>
+                    </div>
+                    <i class="bi bi-check-circle-fill" style="color:#16a34a; font-size:20px;"></i>
+                </div>
+
+                <!-- FORMAT HINT -->
+                <div class="format-hint">
+                    <i class="bi bi-info-circle"></i>
+                    <span>Supported format:</span>
+                    <span class="badge-pdf">PDF</span>
+                    <span class="badge-docx">DOCX</span>
+                </div>
+
+                <!-- ACTIONS -->
+                <div class="upload-actions">
+                    <a href="{% url 'accounts:dashboard' %}" class="btn-ghost">
+                        <i class="bi bi-x-circle"></i> Cancel
+                    </a>
+                    <button type="submit" class="btn-upload">
+                        <i class="bi bi-upload"></i> Upload Resume
+                    </button>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+
+    <!-- SIDE PANEL -->
+    <div>
+
+        <div class="ai-banner" style="margin-bottom: 20px;">
+            <div class="ai-banner-content">
+                <span class="ai-banner-badge">
+                    <i class="bi bi-stars"></i> AI-Powered
+                </span>
+                <h5>Instant resume screening</h5>
+                <p>Once uploaded, we'll extract skills and match you against every job.</p>
+            </div>
+        </div>
+
+        <div class="side-panel">
+            <h4><i class="bi bi-lightbulb-fill"></i> Tips for best results</h4>
+
+            <div class="tip-item">
+                <div class="tip-icon"><i class="bi bi-filetype-pdf"></i></div>
+                <div class="tip-text"><strong>Use PDF</strong> — it keeps formatting consistent.</div>
+            </div>
+
+            <div class="tip-item">
+                <div class="tip-icon"><i class="bi bi-type"></i></div>
+                <div class="tip-text"><strong>Text-based files</strong> — scanned images won't work.</div>
+            </div>
+
+            <div class="tip-item">
+                <div class="tip-icon"><i class="bi bi-list-check"></i></div>
+                <div class="tip-text"><strong>Include a skills section</strong> — helps our matching engine.</div>
+            </div>
+
+            <div class="tip-item">
+                <div class="tip-icon"><i class="bi bi-file-earmark-text"></i></div>
+                <div class="tip-text"><strong>Keep it under 5 MB</strong> — larger files may fail.</div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+    const dropzone = document.getElementById('dropzone');
+    const fileInput = dropzone.querySelector('input[type="file"]');
+    const preview = document.getElementById('filePreview');
+    const fileNameEl = document.getElementById('fileName');
+    const fileSizeEl = document.getElementById('fileSize');
+
+    function formatSize(bytes) {
+        if (bytes < 1024) return bytes + ' B';
+        if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+        return (bytes / (1024 * 1024)).toFixed(2) + ' MB';
+    }
+
+    function showFile(file) {
+        if (!file) return;
+        fileNameEl.textContent = file.name;
+        fileSizeEl.textContent = formatSize(file.size);
+        preview.classList.add('show');
+    }
+
+    fileInput.addEventListener('change', () => {
+        if (fileInput.files.length > 0) showFile(fileInput.files[0]);
+    });
+
+    ['dragenter', 'dragover'].forEach(evt => {
+        dropzone.addEventListener(evt, e => {
+            e.preventDefault();
+            dropzone.classList.add('dragover');
+        });
+    });
+
+    ['dragleave', 'drop'].forEach(evt => {
+        dropzone.addEventListener(evt, e => {
+            e.preventDefault();
+            dropzone.classList.remove('dragover');
+        });
+    });
+
+    dropzone.addEventListener('drop', e => {
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+            fileInput.files = files;
+            showFile(files[0]);
+        }
+    });
+</script>
+
+{% endblock %}

@@ -1,0 +1,412 @@
+{% extends "base.html" %}
+
+{% block title %}My Jobs — HireHub{% endblock %}
+
+{% block extra_head %}
+<link
+    href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700;12..96,800&display=swap"
+    rel="stylesheet">
+
+<style>
+    .page-header h1 {
+        font-family: 'Bricolage Grotesque', -apple-system, sans-serif !important;
+        font-size: 38px;
+        font-weight: 700;
+        letter-spacing: -1.4px;
+        line-height: 1.05;
+        margin-bottom: 6px;
+        color: #0f172a;
+        font-variation-settings: "opsz" 48;
+    }
+
+    .page-header p {
+        font-family: 'Bricolage Grotesque', sans-serif !important;
+        font-size: 14px;
+        font-weight: 500;
+        color: #64748b;
+        margin: 0;
+        letter-spacing: -0.1px;
+        line-height: 1.5;
+    }
+
+    .job-card {
+        background: #fff;
+        border: 1px solid #e5e7eb;
+        border-radius: 18px;
+        padding: 28px 30px;
+        height: 100%;
+        position: relative;
+        overflow: hidden;
+        transition: all 0.25s ease;
+        box-shadow: 0 1px 3px rgba(15, 23, 42, 0.03);
+    }
+
+    .job-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, #6366f1, #a855f7);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .job-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 32px rgba(99, 102, 241, 0.1);
+        border-color: #dbeafe;
+    }
+
+    .job-card:hover::before {
+        opacity: 1;
+    }
+
+    .job-title {
+        font-family: 'Bricolage Grotesque', sans-serif;
+        font-size: 20px;
+        font-weight: 700;
+        color: #0f172a;
+        margin: 0 0 6px;
+        letter-spacing: -0.5px;
+        line-height: 1.25;
+        font-variation-settings: "opsz" 24;
+    }
+
+    .job-company {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 13.5px;
+        font-weight: 700;
+        color: #6366f1;
+        margin: 0 0 14px;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .job-company::before {
+        content: "\f1c0";
+        font-family: "bootstrap-icons";
+        font-size: 13px;
+    }
+
+    .job-description {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 13.5px;
+        color: #475569;
+        line-height: 1.6;
+        margin: 0 0 18px;
+        font-weight: 500;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .job-meta {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        margin-bottom: 18px;
+        padding: 14px 16px;
+        background: #f8fafc;
+        border: 1px solid #e5e7eb;
+        border-radius: 12px;
+    }
+
+    .job-meta-row {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 12.5px;
+        color: #475569;
+        font-weight: 500;
+        line-height: 1.5;
+    }
+
+    .job-meta-row i {
+        color: #6366f1;
+        font-size: 13.5px;
+        width: 16px;
+        flex-shrink: 0;
+        margin-top: 1px;
+    }
+
+    .job-meta-row strong {
+        color: #0f172a;
+        font-weight: 700;
+        margin-right: 4px;
+    }
+
+    .job-footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding-top: 16px;
+        border-top: 1px solid #f1f5f9;
+    }
+
+    .badge-active {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: #ecfdf5;
+        color: #059669;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 11.5px;
+        font-weight: 700;
+        padding: 6px 12px;
+        border-radius: 20px;
+        letter-spacing: 0.3px;
+    }
+
+    .badge-active::before {
+        content: "";
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: #10b981;
+        box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.18);
+    }
+
+    .job-id {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 11.5px;
+        color: #94a3b8;
+        font-weight: 600;
+        letter-spacing: 0.3px;
+    }
+
+    .empty-card {
+        background: #fff;
+        border: 1px solid #e5e7eb;
+        border-radius: 20px;
+        padding: 60px 30px;
+        text-align: center;
+        box-shadow: 0 1px 3px rgba(15, 23, 42, 0.03);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .empty-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, #6366f1, #a855f7);
+    }
+
+    .empty-icon-wrap {
+        width: 76px;
+        height: 76px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #eef2ff, #faf5ff);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 20px;
+        border: 1px solid #e0e7ff;
+    }
+
+    .empty-icon-wrap i {
+        font-size: 32px;
+        color: #6366f1;
+    }
+
+    .empty-card h3 {
+        font-family: 'Bricolage Grotesque', sans-serif;
+        font-size: 20px;
+        font-weight: 700;
+        color: #0f172a;
+        margin: 0 0 8px;
+        letter-spacing: -0.4px;
+        font-variation-settings: "opsz" 24;
+    }
+
+    .empty-card p {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 14px;
+        color: #64748b;
+        margin: 0 0 22px;
+        font-weight: 500;
+        line-height: 1.6;
+    }
+
+    .btn-gradient {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: linear-gradient(135deg, #6366f1, #a855f7);
+        color: #fff;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 11px;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 13.5px;
+        font-weight: 700;
+        text-decoration: none;
+        cursor: pointer;
+        transition: all 0.25s ease;
+        box-shadow: 0 6px 20px rgba(99, 102, 241, 0.28);
+        letter-spacing: -0.1px;
+    }
+
+    .btn-gradient:hover {
+        color: #fff;
+        transform: translateY(-2px);
+        box-shadow: 0 12px 30px rgba(99, 102, 241, 0.42);
+    }
+
+    .jobs-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
+        gap: 20px;
+        margin-top: 24px;
+    }
+
+    @media (max-width: 900px) {
+        .jobs-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media (max-width: 800px) {
+        .page-header h1 {
+            font-size: 30px;
+            letter-spacing: -1px;
+        }
+
+        .job-card {
+            padding: 22px 22px;
+        }
+
+        .job-title {
+            font-size: 18px;
+        }
+    }
+</style>
+{% endblock %}
+
+
+{% block content %}
+
+<div class="page-header">
+    <h1>My Jobs</h1>
+    <p>Manage the jobs you have posted.</p>
+</div>
+
+
+{% if jobs %}
+
+<div class="jobs-grid">
+
+    {% for job in jobs %}
+
+    <div class="job-card">
+
+        <h4 class="job-title">
+            {{ job.title }}
+        </h4>
+
+        <p class="job-company">
+            {{ job.company.name }}
+        </p>
+
+        <p class="job-description">
+            {{ job.description }}
+        </p>
+
+        <div class="job-meta">
+
+            <div class="job-meta-row">
+                <i class="bi bi-tools"></i>
+                <span>
+                    <strong>Skills:</strong>
+                    {{ job.skills }}
+                </span>
+            </div>
+
+            <div class="job-meta-row">
+                <i class="bi bi-geo-alt"></i>
+                <span>
+                    <strong>Location:</strong>
+                    {{ job.location }}
+                </span>
+            </div>
+
+            <div class="job-meta-row">
+                <i class="bi bi-hourglass-split"></i>
+                <span>
+                    <strong>Experience:</strong>
+                    {{ job.experience_required }} years
+                </span>
+            </div>
+
+            <div class="job-meta-row">
+                <i class="bi bi-cash-stack"></i>
+                <span>
+                    <strong>Salary:</strong>
+                    {{ job.salary }}
+                </span>
+            </div>
+
+        </div>
+
+
+        <div class="job-footer">
+
+            <span class="badge-active">
+                Active
+            </span>
+
+            <div class="d-flex align-items-center gap-3">
+
+                <a href="{% url 'jobs:job_applicants' job.id %}" class="btn btn-sm btn-outline-primary">
+                    <i class="bi bi-people"></i>
+                    View Applicants
+                </a>
+
+                <span class="job-id">
+                    #{{ job.id }}
+                </span>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    {% endfor %}
+
+</div>
+
+
+{% else %}
+
+<div class="empty-card">
+
+    <div class="empty-icon-wrap">
+        <i class="bi bi-briefcase"></i>
+    </div>
+
+    <h3>No jobs posted yet</h3>
+
+    <p>
+        You haven't posted any jobs yet.
+    </p>
+
+    <a href="{% url 'jobs:create_job' %}" class="btn-gradient">
+        <i class="bi bi-plus-circle"></i>
+        Post Your First Job
+    </a>
+
+</div>
+
+{% endif %}
+
+{% endblock %}

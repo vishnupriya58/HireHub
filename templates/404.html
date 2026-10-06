@@ -1,0 +1,354 @@
+{% extends "base.html" %}
+
+{% block title %}Page Not Found — HireHub{% endblock %}
+
+{% block extra_head %}
+<link
+    href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700;12..96,800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
+<style>
+    /* =================================
+       ERROR PAGE
+    ================================= */
+    .error-page {
+        min-height: 70vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 50px 20px;
+        position: relative;
+    }
+
+    .error-card {
+        width: 100%;
+        max-width: 660px;
+        text-align: center;
+        background: #ffffff;
+        border: 1px solid #e5e7eb;
+        border-radius: 28px;
+        padding: 64px 34px;
+        box-shadow:
+            0 20px 50px rgba(15, 23, 42, 0.08),
+            0 4px 12px rgba(99, 102, 241, 0.05);
+        position: relative;
+        overflow: hidden;
+        animation: cardIn 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes cardIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px) scale(0.98);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+    }
+
+    /* Top gradient accent */
+    .error-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 5px;
+        background: linear-gradient(90deg, #6366f1, #8b5cf6, #a855f7);
+    }
+
+    /* Soft glow blob top-right */
+    .error-card::after {
+        content: "";
+        position: absolute;
+        top: -120px;
+        right: -120px;
+        width: 320px;
+        height: 320px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(99, 102, 241, 0.10), transparent 70%);
+        pointer-events: none;
+    }
+
+    /* =================================
+       404 NUMBER
+    ================================= */
+    .error-number {
+        font-family: "Bricolage Grotesque", sans-serif;
+        font-size: 110px;
+        font-weight: 800;
+        line-height: 1;
+        letter-spacing: -6px;
+        background: linear-gradient(135deg, #4f46e5 0%, #8b5cf6 50%, #a855f7 100%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 22px;
+        font-variation-settings: "opsz" 96;
+        position: relative;
+        display: inline-block;
+        animation: numberFloat 4s ease-in-out infinite;
+    }
+
+    @keyframes numberFloat {
+
+        0%,
+        100% {
+            transform: translateY(0);
+        }
+
+        50% {
+            transform: translateY(-6px);
+        }
+    }
+
+    /* =================================
+       ICON
+    ================================= */
+    .error-icon {
+        width: 76px;
+        height: 76px;
+        border-radius: 22px;
+        background: linear-gradient(135deg, #eef2ff, #faf5ff);
+        color: #6366f1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 32px;
+        margin: 0 auto 24px;
+        border: 1px solid #e0e7ff;
+        position: relative;
+        box-shadow: 0 8px 24px rgba(99, 102, 241, 0.14);
+    }
+
+    /* Pulsing ring around icon */
+    .error-icon::before {
+        content: "";
+        position: absolute;
+        inset: -6px;
+        border-radius: 26px;
+        border: 1.5px dashed #c7d2fe;
+        opacity: 0.7;
+        animation: spinSlow 20s linear infinite;
+    }
+
+    @keyframes spinSlow {
+        from {
+            transform: rotate(0deg);
+        }
+
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+    /* =================================
+       HEADING + TEXT
+    ================================= */
+    .error-card h1 {
+        font-family: "Bricolage Grotesque", sans-serif;
+        font-size: 30px;
+        font-weight: 700;
+        color: #0f172a;
+        margin-bottom: 12px;
+        letter-spacing: -0.6px;
+        line-height: 1.2;
+    }
+
+    .error-card p {
+        font-family: "Plus Jakarta Sans", sans-serif;
+        color: #64748b;
+        font-size: 14.5px;
+        line-height: 1.7;
+        max-width: 480px;
+        margin: 0 auto 30px;
+        font-weight: 500;
+    }
+
+    /* =================================
+       ACTIONS
+    ================================= */
+    .error-actions {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .error-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 13px 22px;
+        border-radius: 12px;
+        text-decoration: none;
+        font-family: "Plus Jakarta Sans", sans-serif;
+        font-size: 13.5px;
+        font-weight: 700;
+        transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        letter-spacing: -0.1px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .error-btn i {
+        font-size: 14px;
+    }
+
+    /* Primary */
+    .error-btn-primary {
+        background: linear-gradient(135deg, #6366f1, #8b5cf6);
+        color: white;
+        box-shadow: 0 7px 18px rgba(99, 102, 241, 0.28);
+    }
+
+    .error-btn-primary::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        transition: left 0.6s ease;
+    }
+
+    .error-btn-primary:hover::before {
+        left: 100%;
+    }
+
+    .error-btn-primary:hover {
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 12px 26px rgba(99, 102, 241, 0.42);
+    }
+
+    /* Secondary */
+    .error-btn-secondary {
+        background: white;
+        color: #475569;
+        border: 1.5px solid #e2e8f0;
+    }
+
+    .error-btn-secondary:hover {
+        color: #4f46e5;
+        border-color: #c7d2fe;
+        background: #f8fafc;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(99, 102, 241, 0.10);
+    }
+
+    /* =================================
+       HINT ROW
+    ================================= */
+    .error-hint {
+        margin-top: 26px;
+        padding-top: 22px;
+        border-top: 1px solid #f1f5f9;
+        font-family: "Plus Jakarta Sans", sans-serif;
+        font-size: 12.5px;
+        color: #94a3b8;
+        font-weight: 500;
+    }
+
+    .error-hint kbd {
+        background: #f8fafc;
+        border: 1px solid #e5e7eb;
+        border-radius: 6px;
+        padding: 2px 7px;
+        font-size: 11.5px;
+        font-family: 'Inter', monospace;
+        font-weight: 700;
+        color: #475569;
+        margin: 0 2px;
+        box-shadow: 0 1px 0 #e5e7eb;
+    }
+
+    /* =================================
+       RESPONSIVE
+    ================================= */
+    @media (max-width: 600px) {
+        .error-card {
+            padding: 46px 22px;
+            border-radius: 22px;
+        }
+
+        .error-number {
+            font-size: 82px;
+            letter-spacing: -4px;
+        }
+
+        .error-icon {
+            width: 64px;
+            height: 64px;
+            font-size: 26px;
+            border-radius: 18px;
+        }
+
+        .error-icon::before {
+            border-radius: 22px;
+        }
+
+        .error-card h1 {
+            font-size: 24px;
+        }
+
+        .error-card p {
+            font-size: 13.5px;
+        }
+
+        .error-actions {
+            flex-direction: column;
+        }
+
+        .error-btn {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div class="error-page">
+
+    <div class="error-card">
+
+        <div class="error-number">404</div>
+
+        <div class="error-icon">
+            <i class="bi bi-search"></i>
+        </div>
+
+        <h1>Oops! Page Not Found</h1>
+
+        <p>
+            The page you're looking for doesn't exist,
+            may have been moved, or the link might be incorrect.
+        </p>
+
+        <div class="error-actions">
+
+            <a href="{% url 'accounts:dashboard' %}" class="error-btn error-btn-primary">
+                <i class="bi bi-house-fill"></i>
+                Back to Dashboard
+            </a>
+
+            <a href="{% url 'jobs:job_list' %}" class="error-btn error-btn-secondary">
+                <i class="bi bi-search"></i>
+                Browse Jobs
+            </a>
+
+        </div>
+
+        <div class="error-hint">
+            Tip: Check the URL or press <kbd>Alt</kbd> + <kbd>←</kbd> to go back
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HireHub — AI-Powered Resume Screening</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+            background: #f8fafc;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* ===== MESH GRADIENT BACKGROUND ===== */
+        body::before {
+            content: "";
+            position: fixed;
+            top: -20%;
+            left: -10%;
+            width: 700px;
+            height: 700px;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.35) 0%, transparent 70%);
+            border-radius: 50%;
+            filter: blur(50px);
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        body::after {
+            content: "";
+            position: fixed;
+            bottom: -20%;
+            right: -10%;
+            width: 700px;
+            height: 700px;
+            background: radial-gradient(circle, rgba(168, 85, 247, 0.3) 0%, transparent 70%);
+            border-radius: 50%;
+            filter: blur(60px);
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* ===== TOP NAVBAR ===== */
+        .landing-navbar {
+            position: relative;
+            z-index: 10;
+            padding: 22px 40px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .landing-navbar .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 22px;
+            font-weight: 800;
+            color: #0f172a;
+            text-decoration: none;
+        }
+
+        .landing-navbar .brand svg {
+            width: 38px;
+            height: 38px;
+        }
+
+        .landing-navbar .brand span {
+            font-weight: 400;
+            color: #6366f1;
+        }
+
+        .landing-navbar .nav-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .nav-btn {
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+        }
+
+        .nav-btn.ghost {
+            color: #475569;
+            border: 1.5px solid transparent;
+        }
+
+        .nav-btn.ghost:hover {
+            color: #4f46e5;
+            border-color: #e2e8f0;
+            background: #fff;
+        }
+
+        .nav-btn.primary {
+            background: linear-gradient(135deg, #6366f1, #a855f7);
+            color: #fff;
+        }
+
+        .nav-btn.primary:hover {
+            color: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 24px rgba(99, 102, 241, 0.4);
+        }
+
+        /* ===== HERO SECTION ===== */
+        .hero {
+            position: relative;
+            z-index: 5;
+            padding: 60px 40px 80px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            min-height: calc(100vh - 90px);
+            justify-content: center;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            padding: 7px 16px;
+            border-radius: 30px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #4f46e5;
+            margin-bottom: 26px;
+            box-shadow: 0 4px 16px rgba(15, 23, 42, 0.05);
+        }
+
+        .hero-badge i {
+            color: #a855f7;
+            font-size: 14px;
+        }
+
+        .hero-badge .dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #10b981;
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.5;
+            }
+        }
+
+        .hero h1 {
+            font-size: clamp(38px, 6vw, 68px);
+            font-weight: 900;
+            letter-spacing: -1.5px;
+            line-height: 1.08;
+            color: #0f172a;
+            max-width: 900px;
+            margin-bottom: 22px;
+            position: relative;
+        }
+
+        .hero h1 .accent {
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            position: relative;
+            display: inline-block;
+        }
+
+        .hero h1 .wave {
+            display: inline-block;
+            animation: wave 2.5s ease-in-out infinite;
+            transform-origin: 70% 70%;
+        }
+
+        @keyframes wave {
+
+            0%,
+            60%,
+            100% {
+                transform: rotate(0deg);
+            }
+
+            10%,
+            30% {
+                transform: rotate(14deg);
+            }
+
+            20% {
+                transform: rotate(-8deg);
+            }
+
+            40% {
+                transform: rotate(-4deg);
+            }
+
+            50% {
+                transform: rotate(10deg);
+            }
+        }
+
+        .hero p.lead {
+            font-size: clamp(16px, 2vw, 19px);
+            color: #475569;
+            max-width: 620px;
+            line-height: 1.65;
+            margin-bottom: 38px;
+            font-weight: 400;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 14px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 60px;
+        }
+
+        .btn-hero {
+            padding: 15px 30px;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 9px;
+            transition: all 0.25s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-hero.primary {
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            color: #fff;
+            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.35);
+        }
+
+        .btn-hero.primary::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .btn-hero.primary:hover::before {
+            left: 100%;
+        }
+
+        .btn-hero.primary:hover {
+            color: #fff;
+            transform: translateY(-3px);
+            box-shadow: 0 18px 40px rgba(99, 102, 241, 0.45);
+        }
+
+        .btn-hero.secondary {
+            background: #fff;
+            color: #334155;
+            border: 1.5px solid #e2e8f0;
+            box-shadow: 0 4px 16px rgba(15, 23, 42, 0.05);
+        }
+
+        .btn-hero.secondary:hover {
+            color: #4f46e5;
+            border-color: #c7d2fe;
+            background: #fafaff;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 24px rgba(99, 102, 241, 0.15);
+        }
+
+        .btn-hero i {
+            font-size: 17px;
+        }
+
+        /* ===== HERO VISUAL ===== */
+        .hero-visual {
+            position: relative;
+            width: 100%;
+            max-width: 720px;
+            margin: 0 auto;
+        }
+
+        .hero-visual svg {
+            width: 100%;
+            height: auto;
+            filter: drop-shadow(0 30px 60px rgba(99, 102, 241, 0.2));
+            animation: floatY 5s ease-in-out infinite;
+        }
+
+        @keyframes floatY {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-14px);
+            }
+        }
+
+        /* ===== TRUST STRIP ===== */
+        .trust-strip {
+            margin-top: 44px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .trust-strip .label {
+            font-size: 12.5px;
+            font-weight: 600;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+        }
+
+        .trust-logos {
+            display: flex;
+            align-items: center;
+            gap: 34px;
+            flex-wrap: wrap;
+            justify-content: center;
+            opacity: 0.75;
+        }
+
+        .trust-logos span {
+            font-size: 15px;
+            font-weight: 700;
+            color: #64748b;
+            letter-spacing: 0.4px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .trust-logos span i {
+            font-size: 17px;
+            color: #94a3b8;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 800px) {
+            .landing-navbar {
+                padding: 16px 20px;
+            }
+
+            .landing-navbar .brand {
+                font-size: 19px;
+            }
+
+            .landing-navbar .brand svg {
+                width: 32px;
+                height: 32px;
+            }
+
+            .nav-btn {
+                padding: 9px 16px;
+                font-size: 13px;
+            }
+
+            .nav-btn.ghost {
+                display: none;
+            }
+
+            .hero {
+                padding: 40px 20px 60px;
+            }
+
+            .hero h1 {
+                letter-spacing: -0.8px;
+            }
+
+            .hero-buttons {
+                margin-bottom: 40px;
+            }
+
+            .btn-hero {
+                padding: 13px 24px;
+                font-size: 14px;
+            }
+
+            .trust-logos {
+                gap: 22px;
+            }
+
+            .trust-logos span {
+                font-size: 13px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero h1 {
+                font-size: 34px;
+            }
+
+            .hero p.lead {
+                font-size: 15px;
+            }
+
+            .btn-hero {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ===== TOP NAVBAR ===== -->
+    <nav class="landing-navbar">
+        <a href="/" class="brand">
+            <svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <linearGradient id="logoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#6366f1" />
+                        <stop offset="100%" stop-color="#a855f7" />
+                    </linearGradient>
+                </defs>
+                <rect x="4" y="12" width="40" height="30" rx="7" fill="url(#logoGrad)" />
+                <path d="M18 12V8a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v4" stroke="#fff" stroke-width="2.5" fill="none"
+                    stroke-linecap="round" />
+                <circle cx="24" cy="27" r="3" fill="#fff" />
+                <path d="M12 27h6M30 27h6" stroke="#fff" stroke-width="2.5" stroke-linecap="round" />
+            </svg>
+            Hire<span>Hub</span>
+        </a>
+
+        <div class="nav-buttons">
+            {% if user.is_authenticated %}
+            <a href="{% url 'accounts:profile' %}" class="nav-btn ghost">
+                <i class="bi bi-person"></i> My Profile
+            </a>
+            <a href="{% url 'accounts:dashboard' %}" class="nav-btn primary">
+                <i class="bi bi-grid-1x2-fill"></i> Dashboard
+            </a>
+            {% else %}
+            <a href="{% url 'accounts:login' %}" class="nav-btn ghost">
+                <i class="bi bi-box-arrow-in-right"></i> Login
+            </a>
+            <a href="{% url 'accounts:register' %}" class="nav-btn primary">
+                <i class="bi bi-person-plus-fill"></i> Get Started
+            </a>
+            {% endif %}
+        </div>
+    </nav>
+
+    <!-- ===== HERO ===== -->
+    <section class="hero">
+
+        <!-- Badge -->
+        <div class="hero-badge">
+            <span class="dot"></span>
+            <i class="bi bi-stars"></i>
+            AI-Powered Resume Screening
+        </div>
+
+        <!-- Heading (SAME CONTENT + premium styling) -->
+        <h1>
+            Welcome to <span class="accent">HireHub</span>
+            <span class="wave">👋</span>
+        </h1>
+
+        <!-- Lead (SAME CONTENT) -->
+        <p class="lead">
+            Find jobs, apply easily, and connect with opportunities.
+        </p>
+
+        <!-- Buttons (SAME CONTENT + premium styling) -->
+        <div class="hero-buttons">
+            <a href="{% url 'accounts:dashboard' %}" class="btn-hero primary">
+                <i class="bi bi-grid-1x2-fill"></i>
+                Go to Dashboard
+            </a>
+            <a href="{% url 'accounts:profile' %}" class="btn-hero secondary">
+                <i class="bi bi-person-circle"></i>
+                My Profile
+            </a>
+        </div>
+
+        <!-- Hero Visual (illustration) -->
+        <div class="hero-visual">
+            <svg viewBox="0 0 720 380" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <linearGradient id="screenGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#eef2ff" />
+                        <stop offset="100%" stop-color="#faf5ff" />
+                    </linearGradient>
+                    <linearGradient id="chartGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" stop-color="#6366f1" />
+                        <stop offset="100%" stop-color="#a855f7" />
+                    </linearGradient>
+                </defs>
+
+                <!-- Main dashboard card -->
+                <rect x="140" y="70" width="440" height="260" rx="20" fill="#fff" />
+                <rect x="140" y="70" width="440" height="260" rx="20" fill="none" stroke="#e2e8f0" stroke-width="1" />
+
+                <!-- Card header -->
+                <rect x="170" y="100" width="120" height="10" rx="5" fill="#6366f1" />
+                <rect x="170" y="120" width="180" height="6" rx="3" fill="#cbd5e1" />
+
+                <!-- Stats row -->
+                <g>
+                    <rect x="170" y="145" width="120" height="70" rx="12" fill="url(#screenGrad)" />
+                    <rect x="185" y="160" width="40" height="6" rx="3" fill="#6366f1" />
+                    <rect x="185" y="175" width="60" height="14" rx="4" fill="#0f172a" />
+
+                    <rect x="300" y="145" width="120" height="70" rx="12" fill="#ecfdf5" />
+                    <rect x="315" y="160" width="40" height="6" rx="3" fill="#10b981" />
+                    <rect x="315" y="175" width="55" height="14" rx="4" fill="#0f172a" />
+
+                    <rect x="430" y="145" width="120" height="70" rx="12" fill="#faf5ff" />
+                    <rect x="445" y="160" width="40" height="6" rx="3" fill="#a855f7" />
+                    <rect x="445" y="175" width="70" height="14" rx="4" fill="#0f172a" />
+                </g>
+
+                <!-- Chart area -->
+                <rect x="170" y="230" width="380" height="85" rx="12" fill="#f8fafc" />
+                <g fill="url(#chartGrad)" opacity="0.85">
+                    <rect x="195" y="270" width="20" height="30" rx="4" />
+                    <rect x="230" y="255" width="20" height="45" rx="4" />
+                    <rect x="265" y="245" width="20" height="55" rx="4" />
+                    <rect x="300" y="262" width="20" height="38" rx="4" />
+                    <rect x="335" y="250" width="20" height="50" rx="4" />
+                    <rect x="370" y="235" width="20" height="65" rx="4" />
+                    <rect x="405" y="255" width="20" height="45" rx="4" />
+                    <rect x="440" y="245" width="20" height="55" rx="4" />
+                    <rect x="475" y="228" width="20" height="72" rx="4" />
+                    <rect x="510" y="240" width="20" height="60" rx="4" />
+                </g>
+
+                <!-- Floating match score card (top-right) -->
+                <g transform="translate(540, 40)">
+                    <rect width="150" height="90" rx="16" fill="#fff" />
+                    <rect width="150" height="90" rx="16" fill="none" stroke="#e2e8f0" stroke-width="1" />
+                    <circle cx="40" cy="45" r="24" stroke="#e2e8f0" stroke-width="6" fill="none" />
+                    <circle cx="40" cy="45" r="24" stroke="#6366f1" stroke-width="6" fill="none" stroke-dasharray="150"
+                        stroke-dashoffset="42" stroke-linecap="round" transform="rotate(-90 40 45)" />
+                    <text x="40" y="50" font-family="Inter" font-size="14" font-weight="800" fill="#0f172a"
+                        text-anchor="middle">72%</text>
+                    <text x="78" y="38" font-family="Inter" font-size="11" font-weight="700" fill="#0f172a">Match
+                        Score</text>
+                    <rect x="78" y="48" width="55" height="5" rx="2.5" fill="#cbd5e1" />
+                    <rect x="78" y="60" width="40" height="5" rx="2.5" fill="#cbd5e1" />
+                </g>
+
+                <!-- Floating resume card (bottom-left) -->
+                <g transform="translate(30, 230)">
+                    <rect width="130" height="100" rx="14" fill="#fff" />
+                    <rect width="130" height="100" rx="14" fill="none" stroke="#e2e8f0" stroke-width="1" />
+                    <circle cx="30" cy="30" r="12" fill="#eef2ff" />
+                    <path d="M24 30 l4 4 l8 -8" stroke="#6366f1" stroke-width="2" fill="none" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                    <rect x="50" y="22" width="60" height="6" rx="3" fill="#cbd5e1" />
+                    <rect x="50" y="34" width="45" height="5" rx="2.5" fill="#cbd5e1" />
+                    <rect x="18" y="55" width="94" height="5" rx="2.5" fill="#e2e8f0" />
+                    <rect x="18" y="67" width="70" height="5" rx="2.5" fill="#e2e8f0" />
+                    <rect x="18" y="79" width="85" height="5" rx="2.5" fill="#e2e8f0" />
+                </g>
+
+                <!-- Floating dots -->
+                <circle cx="100" cy="100" r="6" fill="#a855f7" opacity="0.4" />
+                <circle cx="640" cy="200" r="8" fill="#6366f1" opacity="0.3" />
+                <circle cx="80" cy="320" r="5" fill="#10b981" opacity="0.5" />
+                <circle cx="660" cy="330" r="6" fill="#a855f7" opacity="0.4" />
+            </svg>
+        </div>
+
+        <!-- Trust strip -->
+        <div class="trust-strip">
+            <div class="label">Trusted by forward-thinking teams</div>
+            <div class="trust-logos">
+                <span><i class="bi bi-lightning-charge-fill"></i> Smart Screening</span>
+                <span><i class="bi bi-shield-check"></i> Role-Based</span>
+                <span><i class="bi bi-graph-up-arrow"></i> Instant Match</span>
+                <span><i class="bi bi-stars"></i> AI Ranking</span>
+            </div>
+        </div>
+
+    </section>
+
+</body>
+
+</html>

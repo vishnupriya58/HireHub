@@ -1,0 +1,1181 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login — HireHub</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700;12..96,800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --purple: #8b5cf6;
+            --text: #0f172a;
+            --muted: #64748b;
+            --border: #e2e8f0;
+        }
+
+        body {
+            min-height: 100vh;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+
+            background:
+                radial-gradient(circle at 5% 10%,
+                    rgba(99, 102, 241, .14),
+                    transparent 28%),
+                radial-gradient(circle at 95% 90%,
+                    rgba(139, 92, 246, .13),
+                    transparent 30%),
+                #f8fafc;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            padding: 28px;
+            overflow-x: hidden;
+
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* =========================
+           MAIN CARD
+        ========================= */
+
+        .auth-wrapper {
+            width: 100%;
+            max-width: 1140px;
+            min-height: 650px;
+
+            display: grid;
+            grid-template-columns: .95fr 1.05fr;
+
+            background: #ffffff;
+
+            border: 1px solid rgba(226, 232, 240, .9);
+
+            border-radius: 32px;
+
+            overflow: hidden;
+
+            box-shadow:
+                0 40px 100px rgba(15, 23, 42, .15),
+                0 10px 30px rgba(99, 102, 241, .08);
+
+            animation: cardIn .6s cubic-bezier(.16, 1, .3, 1);
+        }
+
+        @keyframes cardIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px) scale(.985);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        /* =========================
+           BRAND PANEL
+        ========================= */
+
+        .brand-panel {
+            position: relative;
+            overflow: hidden;
+
+            padding: 44px;
+
+            color: #ffffff;
+
+            display: flex;
+            flex-direction: column;
+
+            background:
+                radial-gradient(circle at 80% 15%,
+                    rgba(255, 255, 255, .16),
+                    transparent 25%),
+                radial-gradient(circle at 15% 90%,
+                    rgba(255, 255, 255, .10),
+                    transparent 28%),
+                linear-gradient(145deg,
+                    #4338ca 0%,
+                    #6366f1 45%,
+                    #8b5cf6 100%);
+        }
+
+        .brand-panel::before {
+            content: "";
+
+            position: absolute;
+            inset: 0;
+
+            background-image:
+                radial-gradient(circle,
+                    rgba(255, 255, 255, .08) 1px,
+                    transparent 1px);
+
+            background-size: 22px 22px;
+
+            opacity: .65;
+
+            pointer-events: none;
+        }
+
+        .brand-panel::after {
+            content: "";
+
+            position: absolute;
+
+            width: 350px;
+            height: 350px;
+
+            border: 1px solid rgba(255, 255, 255, .13);
+
+            border-radius: 50%;
+
+            right: -175px;
+            top: -140px;
+
+            pointer-events: none;
+        }
+
+        /* =========================
+           LOGO
+        ========================= */
+
+        .brand-logo {
+            position: relative;
+            z-index: 3;
+
+            display: flex;
+            align-items: center;
+
+            gap: 12px;
+        }
+
+        .logo-box {
+            width: 48px;
+            height: 48px;
+
+            border-radius: 14px;
+
+            background: rgba(255, 255, 255, .15);
+
+            border: 1px solid rgba(255, 255, 255, .22);
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            backdrop-filter: blur(10px);
+
+            box-shadow:
+                0 10px 25px rgba(0, 0, 0, .15);
+        }
+
+        .logo-box svg {
+            width: 28px;
+            height: 28px;
+        }
+
+        .brand-name {
+            font-family: 'Bricolage Grotesque', sans-serif;
+
+            font-size: 27px;
+
+            font-weight: 700;
+
+            letter-spacing: -1px;
+        }
+
+        .brand-name span {
+            font-weight: 400;
+            opacity: .82;
+        }
+
+        /* =========================
+           BRAND CONTENT
+        ========================= */
+
+        .brand-content {
+            position: relative;
+            z-index: 3;
+
+            margin-top: auto;
+            margin-bottom: auto;
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+
+            gap: 7px;
+
+            padding: 7px 12px;
+
+            border-radius: 30px;
+
+            background: rgba(255, 255, 255, .12);
+
+            border: 1px solid rgba(255, 255, 255, .18);
+
+            font-family: 'Bricolage Grotesque', sans-serif;
+
+            font-size: 11px;
+
+            font-weight: 700;
+
+            letter-spacing: .8px;
+
+            text-transform: uppercase;
+
+            margin-bottom: 20px;
+        }
+
+        .eyebrow i {
+            font-size: 12px;
+        }
+
+        .brand-content h2 {
+            font-family: 'Bricolage Grotesque', sans-serif;
+
+            font-size: 42px;
+
+            line-height: 1.02;
+
+            font-weight: 700;
+
+            letter-spacing: -2px;
+
+            max-width: 400px;
+
+            margin-bottom: 18px;
+        }
+
+        .brand-content h2 span {
+            color: #ddd6fe;
+        }
+
+        .brand-content p {
+            max-width: 400px;
+
+            color: rgba(255, 255, 255, .82);
+
+            font-size: 14.5px;
+
+            line-height: 1.75;
+
+            margin-bottom: 30px;
+
+            font-weight: 500;
+        }
+
+        /* =========================
+           FEATURES
+        ========================= */
+
+        .feature-list {
+            display: grid;
+
+            gap: 12px;
+
+            max-width: 400px;
+        }
+
+        .feature {
+            display: flex;
+            align-items: center;
+
+            gap: 12px;
+
+            color: rgba(255, 255, 255, .92);
+
+            font-size: 13px;
+
+            font-weight: 600;
+        }
+
+        .feature-icon {
+            width: 32px;
+            height: 32px;
+
+            border-radius: 10px;
+
+            background: rgba(255, 255, 255, .14);
+
+            border: 1px solid rgba(255, 255, 255, .15);
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            flex-shrink: 0;
+        }
+
+        .feature-icon i {
+            font-size: 14px;
+        }
+
+        /* =========================
+           FLOATING CARD
+        ========================= */
+
+        .login-card {
+            position: absolute;
+
+            z-index: 3;
+
+            right: 34px;
+            bottom: 42px;
+
+            width: 190px;
+
+            padding: 18px;
+
+            border-radius: 18px;
+
+            background: rgba(255, 255, 255, .13);
+
+            border: 1px solid rgba(255, 255, 255, .20);
+
+            backdrop-filter: blur(18px);
+
+            -webkit-backdrop-filter: blur(18px);
+
+            box-shadow:
+                0 20px 45px rgba(0, 0, 0, .18);
+
+            animation: floatCard 4.5s ease-in-out infinite;
+        }
+
+        @keyframes floatCard {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-9px);
+            }
+        }
+
+        .login-card-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            margin-bottom: 14px;
+        }
+
+        .login-card-title {
+            font-family: 'Bricolage Grotesque', sans-serif;
+
+            font-size: 10px;
+
+            font-weight: 700;
+
+            letter-spacing: 1px;
+
+            text-transform: uppercase;
+
+            opacity: .85;
+        }
+
+        .login-card-icon {
+            width: 27px;
+            height: 27px;
+
+            border-radius: 9px;
+
+            background: rgba(255, 255, 255, .20);
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .login-card-icon i {
+            font-size: 13px;
+        }
+
+        .login-status {
+            display: flex;
+            align-items: center;
+
+            gap: 10px;
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+
+            border-radius: 50%;
+
+            background: #34d399;
+
+            box-shadow:
+                0 0 0 5px rgba(52, 211, 153, .15);
+
+            flex-shrink: 0;
+
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                box-shadow:
+                    0 0 0 5px rgba(52, 211, 153, .15);
+            }
+
+            50% {
+                box-shadow:
+                    0 0 0 8px rgba(52, 211, 153, .05);
+            }
+        }
+
+        .status-title {
+            font-family: 'Bricolage Grotesque', sans-serif;
+
+            font-size: 13px;
+
+            font-weight: 700;
+        }
+
+        .status-text {
+            font-size: 10.5px;
+
+            color: rgba(255, 255, 255, .75);
+
+            margin-top: 2px;
+        }
+
+        /* =========================
+           FORM PANEL
+        ========================= */
+
+        .form-panel {
+            padding: 55px 64px;
+
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+
+            background: #ffffff;
+        }
+
+        .form-header {
+            margin-bottom: 28px;
+        }
+
+        .form-header h1 {
+            font-family: 'Bricolage Grotesque', sans-serif;
+
+            color: var(--text);
+
+            font-size: 34px;
+
+            font-weight: 700;
+
+            letter-spacing: -1.3px;
+
+            line-height: 1.1;
+
+            margin-bottom: 8px;
+        }
+
+        .form-header p {
+            color: var(--muted);
+
+            font-size: 14px;
+
+            font-weight: 500;
+
+            margin: 0;
+        }
+
+        /* =========================
+           DJANGO FORM
+        ========================= */
+
+        .form-panel form>p {
+            margin-bottom: 17px;
+        }
+
+        .form-panel form>p>label {
+            display: block;
+
+            color: #334155;
+
+            font-size: 12.5px;
+
+            font-weight: 700;
+
+            margin-bottom: 7px;
+
+            letter-spacing: .2px;
+        }
+
+        .form-panel form>p>input,
+        .form-panel form>p>select {
+            width: 100%;
+
+            min-height: 50px;
+
+            padding: 12px 15px;
+
+            border: 1.5px solid var(--border);
+
+            border-radius: 12px;
+
+            outline: none;
+
+            background: #f8fafc;
+
+            color: var(--text);
+
+            font-family: 'Plus Jakarta Sans', sans-serif;
+
+            font-size: 13.5px;
+
+            font-weight: 500;
+
+            transition: .2s ease;
+        }
+
+        .form-panel form>p>input:hover,
+        .form-panel form>p>select:hover {
+            border-color: #cbd5e1;
+        }
+
+        .form-panel form>p>input:focus,
+        .form-panel form>p>select:focus {
+            background: #ffffff;
+
+            border-color: var(--primary);
+
+            box-shadow:
+                0 0 0 4px rgba(99, 102, 241, .10);
+        }
+
+        .form-panel form>p>input::placeholder {
+            color: #94a3b8;
+        }
+
+        /* =========================
+           PASSWORD
+        ========================= */
+
+        .password-wrap {
+            position: relative;
+        }
+
+        .password-wrap input {
+            padding-right: 44px !important;
+        }
+
+        .password-toggle {
+            position: absolute;
+
+            right: 12px;
+            top: 50%;
+
+            transform: translateY(-50%);
+
+            background: transparent;
+
+            border: none;
+
+            color: #94a3b8;
+
+            cursor: pointer;
+
+            font-size: 16px;
+
+            padding: 6px;
+
+            border-radius: 8px;
+
+            transition: all .15s ease;
+        }
+
+        .password-toggle:hover {
+            color: #6366f1;
+
+            background: #eef2ff;
+        }
+
+        /* =========================
+           ERRORS
+        ========================= */
+
+        .form-panel form .errorlist {
+            list-style: none;
+
+            padding: 9px 12px;
+
+            margin: 6px 0 10px;
+
+            border-radius: 9px;
+
+            border-left: 3px solid #ef4444;
+
+            background: #fef2f2;
+
+            color: #b91c1c;
+
+            font-size: 11.5px;
+
+            font-weight: 600;
+        }
+
+        .form-panel form .errorlist.nonfield {
+            padding: 12px 14px;
+
+            margin-bottom: 18px;
+
+            border-left: 4px solid #dc2626;
+
+            background: #fef2f2;
+
+            color: #991b1b;
+
+            border-radius: 10px;
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 8px;
+
+            font-size: 13px;
+        }
+
+        .form-panel form .errorlist.nonfield::before {
+            content: "\f33a";
+
+            font-family: "bootstrap-icons";
+
+            font-size: 15px;
+        }
+
+        /* =========================
+           FORGOT PASSWORD
+        ========================= */
+
+        .forgot-password {
+            text-align: right;
+
+            margin-top: -5px;
+            margin-bottom: 16px;
+        }
+
+        .forgot-password a {
+            color: var(--primary-dark);
+
+            font-size: 12.5px;
+
+            font-weight: 700;
+
+            text-decoration: none;
+
+            transition: .2s ease;
+        }
+
+        .forgot-password a:hover {
+            color: #4338ca;
+
+            text-decoration: underline;
+        }
+
+        /* =========================
+           LOGIN BUTTON
+        ========================= */
+
+        .btn-login {
+            width: 100%;
+
+            min-height: 50px;
+
+            margin-top: 4px;
+
+            border: 0;
+
+            border-radius: 12px;
+
+            background:
+                linear-gradient(135deg,
+                    #6366f1,
+                    #8b5cf6);
+
+            color: #ffffff;
+
+            font-family: 'Plus Jakarta Sans', sans-serif;
+
+            font-size: 14px;
+
+            font-weight: 700;
+
+            cursor: pointer;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            gap: 9px;
+
+            box-shadow:
+                0 10px 24px rgba(99, 102, 241, .22);
+
+            transition: .22s ease;
+
+            position: relative;
+
+            overflow: hidden;
+        }
+
+        .btn-login::before {
+            content: "";
+
+            position: absolute;
+
+            top: 0;
+            left: -100%;
+
+            width: 100%;
+            height: 100%;
+
+            background:
+                linear-gradient(90deg,
+                    transparent,
+                    rgba(255, 255, 255, .20),
+                    transparent);
+
+            transition: left .6s ease;
+        }
+
+        .btn-login:hover::before {
+            left: 100%;
+        }
+
+        .btn-login:hover {
+            transform: translateY(-2px);
+
+            box-shadow:
+                0 15px 34px rgba(99, 102, 241, .32);
+        }
+
+        .btn-login:active {
+            transform: translateY(0);
+        }
+
+        /* =========================
+           REGISTER LINK
+        ========================= */
+
+        .register-link {
+            text-align: center;
+
+            color: #64748b;
+
+            font-size: 13px;
+
+            font-weight: 500;
+
+            margin-top: 22px;
+        }
+
+        .register-link a {
+            color: var(--primary-dark);
+
+            font-weight: 700;
+
+            text-decoration: none;
+
+            margin-left: 4px;
+        }
+
+        .register-link a:hover {
+            color: #4338ca;
+
+            text-decoration: underline;
+        }
+
+        /* =========================
+           RESPONSIVE
+        ========================= */
+
+        @media (max-width: 980px) {
+
+            .auth-wrapper {
+                grid-template-columns: 1fr;
+
+                max-width: 640px;
+            }
+
+            .brand-panel {
+                min-height: 400px;
+
+                padding: 34px;
+            }
+
+            .brand-content h2 {
+                font-size: 34px;
+            }
+
+            .login-card {
+                display: none;
+            }
+
+            .form-panel {
+                padding: 42px 38px;
+            }
+        }
+
+        @media (max-width: 520px) {
+
+            body {
+                padding: 12px;
+            }
+
+            .auth-wrapper {
+                border-radius: 24px;
+            }
+
+            .brand-panel {
+                min-height: 340px;
+
+                padding: 26px;
+            }
+
+            .brand-content h2 {
+                font-size: 29px;
+
+                letter-spacing: -1.2px;
+            }
+
+            .form-panel {
+                padding: 32px 22px;
+            }
+
+            .form-header h1 {
+                font-size: 27px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="auth-wrapper">
+
+        <!-- =========================
+             BRAND SIDE
+        ========================= -->
+
+        <section class="brand-panel">
+
+            <div class="brand-logo">
+
+                <div class="logo-box">
+
+                    <svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+
+                        <rect x="6" y="14" width="36" height="26" rx="6" fill="#ffffff" />
+
+                        <path d="M18 14V10a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v4" stroke="#6366f1" stroke-width="2.5"
+                            fill="none" stroke-linecap="round" />
+
+                        <circle cx="24" cy="27" r="3.5" fill="#8b5cf6" />
+
+                        <path d="M14 27h5M29 27h5" stroke="#6366f1" stroke-width="2.5" stroke-linecap="round" />
+
+                        <circle cx="40" cy="10" r="2.5" fill="#a855f7" />
+
+                    </svg>
+
+                </div>
+
+                <div class="brand-name">
+                    Hire<span>Hub</span>
+                </div>
+
+            </div>
+
+            <div class="brand-content">
+
+                <div class="eyebrow">
+
+                    <i class="bi bi-shield-check"></i>
+
+                    Welcome Back
+
+                </div>
+
+                <h2>
+                    Your next<br>
+                    <span>career move.</span>
+                </h2>
+
+                <p>
+                    Sign in to continue exploring
+                    opportunities, managing applications,
+                    and connecting with the right people.
+                </p>
+
+                <div class="feature-list">
+
+                    <div class="feature">
+
+                        <div class="feature-icon">
+                            <i class="bi bi-search"></i>
+                        </div>
+
+                        Discover relevant jobs
+
+                    </div>
+
+                    <div class="feature">
+
+                        <div class="feature-icon">
+                            <i class="bi bi-graph-up-arrow"></i>
+                        </div>
+
+                        Track your applications
+
+                    </div>
+
+                    <div class="feature">
+
+                        <div class="feature-icon">
+                            <i class="bi bi-stars"></i>
+                        </div>
+
+                        Smart skill matching
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- FLOATING STATUS -->
+
+            <div class="login-card">
+
+                <div class="login-card-top">
+
+                    <span class="login-card-title">
+                        HireHub
+                    </span>
+
+                    <div class="login-card-icon">
+
+                        <i class="bi bi-check2"></i>
+
+                    </div>
+
+                </div>
+
+                <div class="login-status">
+
+                    <div class="status-dot"></div>
+
+                    <div>
+
+                        <div class="status-title">
+                            Ready to match
+                        </div>
+
+                        <div class="status-text">
+                            Your opportunities await
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- =========================
+             LOGIN FORM
+        ========================= -->
+
+        <section class="form-panel">
+
+            <div class="form-header">
+
+                <h1>
+                    Welcome back
+                </h1>
+
+                <p>
+                    Sign in to your HireHub account.
+                </p>
+
+            </div>
+
+            <form method="post" novalidate>
+
+                {% csrf_token %}
+
+                {% if form.non_field_errors %}
+                {{ form.non_field_errors }}
+                {% endif %}
+
+                {% for field in form %}
+
+                <p>
+
+                    <label for="{{ field.id_for_label }}">
+                        {{ field.label }}
+                    </label>
+
+                    {% if field.name == "password" %}
+
+                <div class="password-wrap">
+
+                    {{ field }}
+
+                    <button type="button" class="password-toggle" onclick="togglePassword(this)"
+                        aria-label="Show password">
+
+                        <i class="bi bi-eye"></i>
+
+                    </button>
+
+                </div>
+
+                {% else %}
+
+                {{ field }}
+
+                {% endif %}
+
+                {% if field.errors %}
+                {{ field.errors }}
+                {% endif %}
+
+                </p>
+
+                {% endfor %}
+
+                <!-- FORGOT PASSWORD -->
+
+                <div class="forgot-password">
+
+                    <a href="{% url 'accounts:password_reset' %}">
+                        Forgot Password?
+                    </a>
+
+                </div>
+
+                <button type="submit" class="btn-login">
+
+                    <i class="bi bi-box-arrow-in-right"></i>
+
+                    Sign In
+
+                </button>
+
+            </form>
+
+            <div class="register-link">
+
+                Don't have an account?
+
+                <a href="{% url 'accounts:register' %}">
+                    Create account
+                </a>
+
+            </div>
+
+        </section>
+
+    </div>
+
+    <!-- =========================
+         PASSWORD TOGGLE
+    ========================= -->
+
+    <script>
+
+        function togglePassword(btn) {
+
+            const input =
+                btn.parentElement.querySelector('input');
+
+            const icon =
+                btn.querySelector('i');
+
+            if (input.type === 'password') {
+
+                input.type = 'text';
+
+                icon.className =
+                    'bi bi-eye-slash';
+
+                btn.setAttribute(
+                    'aria-label',
+                    'Hide password'
+                );
+
+            } else {
+
+                input.type = 'password';
+
+                icon.className =
+                    'bi bi-eye';
+
+                btn.setAttribute(
+                    'aria-label',
+                    'Show password'
+                );
+            }
+        }
+
+        // Auto-focus username field
+
+        document.addEventListener(
+            'DOMContentLoaded',
+            function () {
+
+                const firstInput =
+                    document.querySelector(
+                        '.form-panel input:not([type="hidden"])'
+                    );
+
+                if (firstInput) {
+                    firstInput.focus();
+                }
+
+            }
+        );
+
+    </script>
+
+</body>
+
+</html>

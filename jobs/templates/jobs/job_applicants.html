@@ -1,0 +1,572 @@
+{% extends "base.html" %}
+
+{% block title %}Applicants — HireHub{% endblock %}
+
+{% block extra_head %}
+
+<link
+    href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700;12..96,800&display=swap"
+    rel="stylesheet">
+
+<style>
+    .page-header h1 {
+        font-family: 'Bricolage Grotesque', sans-serif !important;
+        font-size: 38px;
+        font-weight: 700;
+        letter-spacing: -1.4px;
+        margin-bottom: 6px;
+        color: #0f172a;
+    }
+
+    .page-header p {
+        font-family: 'Bricolage Grotesque', sans-serif !important;
+        font-size: 14px;
+        color: #64748b;
+        margin: 0;
+    }
+
+    .page-header p .dot {
+        color: #cbd5e1;
+        margin: 0 6px;
+    }
+
+    .applicants-card {
+        background: #fff;
+        border: 1px solid #e5e7eb;
+        border-radius: 18px;
+        overflow: hidden;
+        box-shadow: 0 8px 24px rgba(15, 23, 42, 0.04);
+    }
+
+    .applicants-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .applicants-table thead {
+        background: #f8fafc;
+    }
+
+    .applicants-table th {
+        padding: 16px 18px;
+        text-align: left;
+        font-size: 11px;
+        font-weight: 700;
+        color: #64748b;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        border-bottom: 1px solid #e5e7eb;
+    }
+
+    .applicants-table td {
+        padding: 18px;
+        font-size: 13px;
+        color: #475569;
+        vertical-align: middle;
+        border-bottom: 1px solid #f1f5f9;
+    }
+
+    .applicant-cell {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .applicant-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 11px;
+        background: linear-gradient(135deg, #6366f1, #a855f7);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 17px;
+        font-weight: 700;
+        flex-shrink: 0;
+    }
+
+    .applicant-name {
+        font-size: 14px;
+        font-weight: 700;
+        color: #0f172a;
+    }
+
+    .view-profile-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        margin-top: 6px;
+        padding: 5px 10px;
+        border-radius: 7px;
+        background: #eef2ff;
+        color: #4f46e5;
+        border: 1px solid #c7d2fe;
+        text-decoration: none;
+        font-size: 11px;
+        font-weight: 700;
+    }
+
+    .view-profile-btn:hover {
+        background: #e0e7ff;
+        color: #4338ca;
+    }
+
+    .email-cell {
+        color: #64748b;
+    }
+
+    .match-badge {
+        display: inline-flex;
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 13px;
+        font-weight: 700;
+    }
+
+    .match-high {
+        background: #ecfdf5;
+        color: #059669;
+        border: 1px solid #bbf7d0;
+    }
+
+    .match-medium {
+        background: #fffbeb;
+        color: #d97706;
+        border: 1px solid #fde68a;
+    }
+
+    .match-low {
+        background: #fef2f2;
+        color: #dc2626;
+        border: 1px solid #fecaca;
+    }
+
+    .skills-box {
+        min-width: 190px;
+        max-width: 280px;
+    }
+
+    .skills-title {
+        font-size: 11px;
+        font-weight: 800;
+        margin-bottom: 5px;
+    }
+
+    .matched-title {
+        color: #059669;
+    }
+
+    .missing-title {
+        color: #dc2626;
+        margin-top: 7px;
+    }
+
+    .skill-badge {
+        display: inline-block;
+        padding: 4px 8px;
+        border-radius: 6px;
+        font-size: 10.5px;
+        font-weight: 700;
+        margin: 2px;
+    }
+
+    .matched-skill {
+        background: #ecfdf5;
+        color: #059669;
+        border: 1px solid #bbf7d0;
+    }
+
+    .missing-skill {
+        background: #fef2f2;
+        color: #dc2626;
+        border: 1px solid #fecaca;
+    }
+
+    .no-skills {
+        color: #94a3b8;
+        font-size: 11px;
+    }
+
+    .status-text {
+        font-weight: 600;
+    }
+
+    .date-text {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        color: #64748b;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 8px;
+    }
+
+    .btn-shortlist,
+    .btn-reject {
+        padding: 8px 13px;
+        border-radius: 9px;
+        font-size: 12px;
+        font-weight: 700;
+        cursor: pointer;
+    }
+
+    .btn-shortlist {
+        background: linear-gradient(135deg, #10b981, #059669);
+        color: white;
+        border: none;
+    }
+
+    .btn-reject {
+        background: white;
+        color: #dc2626;
+        border: 1.5px solid #fecaca;
+    }
+
+    .status-pill {
+        display: inline-flex;
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    .status-pill.shortlisted {
+        background: #ecfdf5;
+        color: #059669;
+    }
+
+    .status-pill.rejected {
+        background: #fef2f2;
+        color: #dc2626;
+    }
+
+    .empty-card {
+        background: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 20px;
+        padding: 60px 30px;
+        text-align: center;
+    }
+
+    .empty-icon-wrap {
+        width: 76px;
+        height: 76px;
+        border-radius: 50%;
+        background: #eef2ff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 20px;
+    }
+
+    .empty-icon-wrap i {
+        font-size: 32px;
+        color: #6366f1;
+    }
+
+    .empty-card h5 {
+        font-size: 20px;
+        font-weight: 700;
+        color: #0f172a;
+    }
+
+    .empty-card p {
+        color: #64748b;
+    }
+
+    .btn-back {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: white;
+        color: #475569;
+        border: 1.5px solid #e5e7eb;
+        padding: 11px 22px;
+        border-radius: 11px;
+        text-decoration: none;
+        font-size: 13.5px;
+        font-weight: 700;
+        margin-top: 22px;
+    }
+
+    @media (max-width: 1100px) {
+        .email-cell {
+            display: none;
+        }
+
+        .applicants-table th,
+        .applicants-table td {
+            padding: 14px 12px;
+        }
+
+        .skills-box {
+            min-width: 150px;
+        }
+    }
+</style>
+
+{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+
+    <h1>Applicants</h1>
+
+    <p>
+        {{ job.title }}
+        <span class="dot">·</span>
+        {{ job.company.name }}
+    </p>
+
+</div>
+
+{% if applications %}
+
+<div class="applicants-card mt-4">
+
+    <div class="table-responsive">
+
+        <table class="applicants-table">
+
+            <thead>
+
+                <tr>
+                    <th>Applicant</th>
+                    <th>Email</th>
+                    <th>Match</th>
+                    <th>Skills</th>
+                    <th>Status</th>
+                    <th>Applied On</th>
+                    <th>Action</th>
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                {% for application in applications %}
+
+                <tr>
+
+                    <!-- Applicant -->
+
+                    <td>
+
+                        <div class="applicant-cell">
+
+                            <div class="applicant-avatar">
+                                {{ application.applicant.username|slice:":1"|upper }}
+                            </div>
+
+                            <div>
+
+                                <div class="applicant-name">
+                                    {{ application.applicant.username }}
+                                </div>
+
+                                <a href="{% url 'accounts:applicant_profile' application.applicant.id %}"
+                                    class="view-profile-btn">
+                                    <i class="bi bi-person"></i>
+                                    View Profile
+                                </a>
+
+                            </div>
+
+                        </div>
+
+                    </td>
+
+
+                    <!-- Email -->
+
+                    <td class="email-cell">
+                        {{ application.applicant.email }}
+                    </td>
+
+
+                    <!-- Match Percentage -->
+
+                    <td>
+
+                        {% if application.match_percentage >= 70 %}
+
+                        <span class="match-badge match-high">
+                            {{ application.match_percentage }}%
+                        </span>
+
+                        {% elif application.match_percentage >= 40 %}
+
+                        <span class="match-badge match-medium">
+                            {{ application.match_percentage }}%
+                        </span>
+
+                        {% else %}
+
+                        <span class="match-badge match-low">
+                            {{ application.match_percentage }}%
+                        </span>
+
+                        {% endif %}
+
+                    </td>
+
+
+                    <!-- Matched / Missing Skills -->
+
+                    <td>
+
+                        <div class="skills-box">
+
+                            {% if application.matched_skills %}
+
+                            <div class="skills-title matched-title">
+                                Matched Skills
+                            </div>
+
+                            {% for skill in application.matched_skills %}
+
+                            <span class="skill-badge matched-skill">
+                                {{ skill }}
+                            </span>
+
+                            {% endfor %}
+
+                            {% endif %}
+
+
+                            {% if application.missing_skills %}
+
+                            <div class="skills-title missing-title">
+                                Missing Skills
+                            </div>
+
+                            {% for skill in application.missing_skills %}
+
+                            <span class="skill-badge missing-skill">
+                                {{ skill }}
+                            </span>
+
+                            {% endfor %}
+
+                            {% endif %}
+
+
+                            {% if not application.matched_skills and not application.missing_skills %}
+
+                            <span class="no-skills">
+                                No skill data
+                            </span>
+
+                            {% endif %}
+
+                        </div>
+
+                    </td>
+
+
+                    <!-- Status -->
+
+                    <td class="status-text">
+                        {{ application.get_status_display }}
+                    </td>
+
+
+                    <!-- Applied Date -->
+
+                    <td>
+
+                        <span class="date-text">
+
+                            <i class="bi bi-calendar3"></i>
+
+                            {{ application.applied_at|date:"d M Y" }}
+
+                        </span>
+
+                    </td>
+
+
+                    <!-- Action -->
+
+                    <td>
+
+                        {% if application.status == "APPLIED" %}
+
+                        <form method="post" action="{% url 'jobs:update_application_status' application.id %}"
+                            class="action-buttons">
+
+                            {% csrf_token %}
+
+                            <button type="submit" name="status" value="SHORTLISTED" class="btn-shortlist">
+                                <i class="bi bi-check-lg"></i>
+                                Shortlist
+                            </button>
+
+                            <button type="submit" name="status" value="REJECTED" class="btn-reject">
+                                <i class="bi bi-x-lg"></i>
+                                Reject
+                            </button>
+
+                        </form>
+
+                        {% elif application.status == "SHORTLISTED" %}
+
+                        <span class="status-pill shortlisted">
+                            Shortlisted
+                        </span>
+
+                        {% elif application.status == "REJECTED" %}
+
+                        <span class="status-pill rejected">
+                            Rejected
+                        </span>
+
+                        {% endif %}
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+{% else %}
+
+<div class="empty-card mt-4">
+
+    <div class="empty-icon-wrap">
+
+        <i class="bi bi-people"></i>
+
+    </div>
+
+    <h5>No applicants yet</h5>
+
+    <p>
+        Applicants will appear here when they apply for this job.
+    </p>
+
+</div>
+
+{% endif %}
+
+
+<a href="{% url 'jobs:my_jobs' %}" class="btn-back">
+    <i class="bi bi-arrow-left"></i>
+    Back to My Jobs
+</a>
+
+{% endblock %}

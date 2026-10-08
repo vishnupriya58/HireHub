@@ -1,3 +1,4 @@
+
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from .forms import RegisterForm, ResumeForm, ProfileForm
@@ -46,6 +47,12 @@ def register(request):
 
         if form.is_valid():
             form.save()
+
+            messages.success(
+                request,
+                "Registration successful!"
+            )
+
             return redirect("accounts:login")
 
     else:
@@ -61,6 +68,15 @@ def register(request):
 class UserLoginView(LoginView):
 
     template_name = "accounts/login.html"
+
+    def form_valid(self, form):
+
+        messages.success(
+            self.request,
+            "Login successful!"
+        )
+
+        return super().form_valid(form)
 
 
 @login_required
@@ -173,6 +189,11 @@ def upload_resume(request):
             )
 
             resume.save()
+
+            messages.success(
+                request,
+                "Resume uploaded successfully!"
+            )
 
             return redirect(
                 "accounts:dashboard"
